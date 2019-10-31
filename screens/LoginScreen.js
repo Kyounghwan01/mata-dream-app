@@ -14,7 +14,7 @@ const LoginScreen = props => {
       <View>
         <Text
           style={styles.titleText}>
-          WE WALK
+          MATA-DREAM
         </Text>
         <Button
           primary

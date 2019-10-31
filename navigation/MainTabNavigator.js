@@ -9,7 +9,7 @@ import LogoutButton from '../components/LogoutButton';
 
 //import { logoutAsync } from '../api';
 
-//import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon from '../components/TabBarIcon';
 import colorConstans from '../constants/Colors';
 
 const LogoutHeader = props => {
@@ -37,28 +37,28 @@ const FeedStack = createStackNavigator(
         };
       }
     },
-    // CourseDetail: {
-    //   screen: CourseDetailScreen,
-    //   navigationOptions: {
-    //     title: 'Details',
-    //     headerTintColor: colorConstans.headerTextColor,
-    //     headerStyle: {
-    //       backgroundColor: colorConstans.mainColor,
-    //     },
-    //   }
-    // }
+    CourseDetail: {
+      screen: CourseDetailScreen,
+      navigationOptions: {
+        title: 'Details',
+        headerTintColor: colorConstans.headerTextColor,
+        headerStyle: {
+          backgroundColor: colorConstans.mainColor,
+        },
+      }
+    }
   }
 );
 
-// FeedStack.navigationOptions = {
-//   tabBarLabel: 'Feed',
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name='md-list-box'
-//     />
-//   )
-// };
+FeedStack.navigationOptions = {
+  tabBarLabel: 'Feed',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name='md-list-box'
+    />
+  )
+};
 
 // FeedStack.path = '';
 
@@ -82,39 +82,39 @@ const myCourseStack = createStackNavigator(
   {
     MyCourse: {
       screen: MyCourseScreen,
-      // navigationOptions: props => {
-      //   return {
-      //     headerRight: <LogoutHeader navigation={props.navigation} />,
-      //     title: 'myCourse',
-      //     headerTintColor: colorConstans.headerTextColor,
-      //     headerStyle: {
-      //       backgroundColor: colorConstans.mainColor,
-      //     },
-      //   };
-      // }
+      navigationOptions: props => {
+        return {
+          headerRight: <LogoutHeader navigation={props.navigation} />,
+          title: 'myCourse',
+          headerTintColor: colorConstans.headerTextColor,
+          headerStyle: {
+            backgroundColor: colorConstans.mainColor,
+          },
+        };
+      }
     },
-    // CourseDetail: {
-    //   screen: CourseDetailScreen,
-    //   navigationOptions: {
-    //     title: 'My Course Details',
-    //     headerTintColor: colorConstans.headerTextColor,
-    //     headerStyle: {
-    //       backgroundColor: colorConstans.mainColor,
-    //     },
-    //   }
-    // }
+    CourseDetail: {
+      screen: CourseDetailScreen,
+      navigationOptions: {
+        title: 'My Course Details',
+        headerTintColor: colorConstans.headerTextColor,
+        headerStyle: {
+          backgroundColor: colorConstans.mainColor,
+        },
+      }
+    }
   }
 );
 
-// myCourseStack.navigationOptions = {
-//   tabBarLabel: 'myCourse',
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={'md-archive'}
-//     />
-//   )
-// };
+myCourseStack.navigationOptions = {
+  tabBarLabel: 'myCourse',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={'md-archive'}
+    />
+  )
+};
 
 const MainTabNavigator = createBottomTabNavigator(
   {
