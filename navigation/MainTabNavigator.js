@@ -7,7 +7,7 @@ import MyCourseScreen from '../screens/MyCourseScreen';
 //import RecordNavigator from './RecordNavigator';
 import LogoutButton from '../components/LogoutButton';
 
-//import { logoutAsync } from '../api';
+import { logoutAsync } from '../api';
 
 import TabBarIcon from '../components/TabBarIcon';
 import colorConstans from '../constants/Colors';
@@ -15,7 +15,7 @@ import colorConstans from '../constants/Colors';
 const LogoutHeader = props => {
 
   const requestLogout = async () => {
-    // await logoutAsync();
+    await logoutAsync();
     props.navigation.navigate('Login');
   };
 

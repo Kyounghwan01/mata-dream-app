@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Button, Alert } from 'react-native';
+import { test } from '../api';
 
 export default class FeedScreen extends Component {
   render() {
     return (
       <View>
-        <Text>FeedScreen</Text>
+        <Text>강리스트오는자리입니다</Text>
+        <Button
+          title="Press me"
+          onPress={test}
+        />
       </View>
     )
   }
