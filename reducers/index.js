@@ -1,3 +1,4 @@
+import { PARK_LIST } from '../constants/ActionTypes';
 // import {
 //   COMPLETE_LOADING,
 //   INIT_RECORDING,
@@ -12,13 +13,24 @@
 //   RECORDING,
 //   AFTER_RECORDING
 // } from '../constants/status';
+// const initialState = {
+//   isLoadingComplete: false,
+//   isLoadingRecord: false,
+//   recordingStatus: 'BEFORE_RECORDING'
+// };
+
 const initialState = {
-  isLoadingComplete: false,
-  isLoadingRecord: false,
-  recordingStatus: 'BEFORE_RECORDING'
+  parkList: []
 };
 
 export default reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case PARK_LIST:
+      return Object.assign({ ...state },{parkList: [true]});
+    default:
+      return state;
+  }
+
   // switch (action.type) {
   // case COMPLETE_LOADING:
   //   return Object.assign({...state}, {
@@ -56,5 +68,4 @@ export default reducer = (state = initialState, action) => {
   // default:
   //   return state;
   // }
-  return state;
 };

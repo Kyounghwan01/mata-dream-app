@@ -2046,7 +2046,7 @@ expo-app-loader-provider@~7.0.0:
   resolved "https://registry.yarnpkg.com/expo-app-loader-provider/-/expo-app-loader-provider-7.0.0.tgz#9bfff831a204d0a8896e0120bce2209c4304ef03"
   integrity sha512-C+5zpZN2T7PCj7weLs/ZgAC+y9dvu0VdTXD00Jf9Wo7Pxu/lsLh6ljg9JL91c+2tYDzMEODPNmT+JOUIxAr5zQ==
 
-expo-asset@~7.0.0:
+expo-asset@^7.0.0, expo-asset@~7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-7.0.0.tgz#6d2ba460dd43807f40580199c0b76c508eb1ca63"
   integrity sha512-MwWrlpzaZqT0NU0V3Wn8oA1pMb7Al49aYAWMPEUZ2UV5NyVAbzYPuS2duIfwX55ivczjJZHpwrhd0hb/3l9ngQ==

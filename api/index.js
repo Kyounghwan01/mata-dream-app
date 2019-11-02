@@ -81,8 +81,12 @@ export const logoutAsync = async () => {
     });
 };
 
+export const getParkList = async () => {
+  const parkList = await axios.get(`http://localhost:3001/park`);
+  return parkList
+}
+
 export const test = async () => {
-  console.log('qwe');
   const userToken = await SecureStore.getItemAsync('USERTOKEN');
   const socialId = await SecureStore.getItemAsync('SOCIAL_ID');
   const a = await axios.get(`http://localhost:3001/auth/test`, {
@@ -97,6 +101,7 @@ export const test = async () => {
   console.log(a.data.message);
   //get, or post 할때 검증을 위해 header값에 토큰을 넣어준다
 };
+
 
 export const getCoursesByLocation = async (
   pageNo,

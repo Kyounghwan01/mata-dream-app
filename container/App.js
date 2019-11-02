@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import AppNavigator from '../navigation/AppNavigator';
+import {PARK_LIST} from '../constants/ActionTypes';
 
 // import {
 //   COMPLETE_LOADING,
@@ -14,16 +15,20 @@ import AppNavigator from '../navigation/AppNavigator';
 // } from '../constants/actionType';
 
 const mapStateToProps = state => {
-  const { isLoadingComplete, recordingStatus, isLoadingRecord } = state;
+  const {parkList} = state;
+  return {parkList};
+  //const { isLoadingComplete, recordingStatus, isLoadingRecord } = state;
 
-  return {
-    isLoadingComplete,
-    recordingStatus,
-    isLoadingRecord
-  };
+  // return {
+  //   isLoadingComplete,
+  //   recordingStatus,
+  //   isLoadingRecord
+  // };
 };
 
 const mapDispatchToProps = dispatch => ({
+  getParkList : () => dispatch({type : PARK_LIST})
+
   // completeAppLoading: () => dispatch({ type: COMPLETE_LOADING }),
   // onLoadingRecordScreen: () => dispatch({ type: LOADING_RECORD_SCREEN }),
   // onLoadingRecordScreenComplete: () => dispatch({ type: COMPLETE_LOADING_RECORD_SCREEN }),
