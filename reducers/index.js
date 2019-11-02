@@ -26,7 +26,7 @@ const initialState = {
 export default reducer = (state = initialState, action) => {
   switch (action.type) {
     case PARK_LIST:
-      return Object.assign({ ...state },{parkList: [true]});
+      return Object.assign({ ...state },{parkList: action.list});
     default:
       return state;
   }

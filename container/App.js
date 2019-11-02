@@ -27,7 +27,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  getParkList : () => dispatch({type : PARK_LIST})
+  getParkList : (list) => dispatch({type : PARK_LIST, list})
 
   // completeAppLoading: () => dispatch({ type: COMPLETE_LOADING }),
   // onLoadingRecordScreen: () => dispatch({ type: LOADING_RECORD_SCREEN }),

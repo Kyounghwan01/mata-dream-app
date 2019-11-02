@@ -1,27 +1,27 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
 import {getParkList} from '../api';
+import { Icon, Button, Text, View } from 'native-base';
 
 export default class ParkListScreen extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      parkList : null
-    }
   }
   componentDidMount(){
     const getAsync = async () => {
       const res = await getParkList();
-      this.setState({parkList : res.data.parkList}, function(){console.log(this.state.parkList)});
+      this.props.screenProps.getParkList(res.data.parkList);
     }
     getAsync();
   }
+  // componentDidUpdate(){
+  //   console.log(this.props.screenProps);
+  // }
   render() {
     return (
       <View>
         {
-          this.state.parkList ? <View>
-            {this.state.parkList.map((data, list) => {
+          this.props.screenProps.parkList ? <View>
+            {this.props.screenProps.parkList.map((data, list) => {
               return <View key={list}>
               <Text>{data.address}</Text>
               <Text>{data.name}</Text>
@@ -29,6 +29,11 @@ export default class ParkListScreen extends Component {
             })}
           </View> : null
         }
+        <Button
+          onPress={()=>{this.props.navigation.navigate('Main',{
+            item : '이것은 파라미터이다'
+          })}}
+        />
       </View>
     )
   }

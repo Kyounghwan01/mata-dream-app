@@ -56,10 +56,6 @@ export const loginWithFacebook = async () => {
   }
 };
 
-// export const logoutAsync = async () => {
-//   const userToken = await SecureStore.getItemAsync('USERTOKEN');
-//   await axios.post(`http://localhost:3001/auth/logout`,{},{})
-// }
 export const logoutAsync = async () => {
   const userToken = await SecureStore.getItemAsync('USERTOKEN');
   await axios
