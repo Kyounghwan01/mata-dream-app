@@ -30,7 +30,7 @@ export default App;
 // import { Camera } from 'expo-camera';
 // import axios from 'axios';
 
-// const API_KEY = "566758fdfefa4f7755240c7c1f060b10";
+// const WEATHER_API_KEY = "566758fdfefa4f7755240c7c1f060b10";
 
 // export default class App extends Component {
 //   constructor(props) {
@@ -92,7 +92,7 @@ export default App;
 //   _getWeather = async(lat, long) => {
 //     await fetch(
 //       //literal 은 ''가 아니고 ``임!
-//         `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${API_KEY}`
+//         `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${WEATHER_API_KEY}`
 //       )
 //       .then(response => response.json())
 //       .then(json => {

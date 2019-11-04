@@ -1,1 +1,2 @@
 export const PARK_LIST = 'PARKLIST';
+export const SELECTED_PARK_DATA = 'SELECTED_PARK_DATA';

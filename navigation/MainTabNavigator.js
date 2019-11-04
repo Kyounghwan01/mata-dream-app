@@ -1,10 +1,14 @@
 import React from 'react';
-import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createSwitchNavigator,
+  createAppContainer
+} from 'react-navigation';
 
-import FeedScreen from '../screens/FeedScreen';
+import ParkMainScreen from '../screens/ParkMainScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import MyCourseScreen from '../screens/MyCourseScreen';
-//import RecordNavigator from './RecordNavigator';
 import LogoutButton from '../components/LogoutButton';
 
 import { logoutAsync } from '../api';
@@ -13,7 +17,6 @@ import TabBarIcon from '../components/TabBarIcon';
 import colorConstans from '../constants/Colors';
 
 const LogoutHeader = props => {
-
   const requestLogout = async () => {
     await logoutAsync();
     props.navigation.navigate('Login');
@@ -22,108 +25,82 @@ const LogoutHeader = props => {
   return <LogoutButton onLogoutButtonClick={requestLogout} />;
 };
 
-const FeedStack = createStackNavigator(
-  {
-    Feed: {
-      screen: FeedScreen,
-      navigationOptions: props => {
-        return {
-          headerRight: <LogoutHeader navigation={props.navigation} />,
-          title: 'Feed',
-          headerTintColor: colorConstans.headerTextColor,
-          headerStyle: {
-            backgroundColor: colorConstans.mainColor,
-          },
-        };
-      }
-    },
-    CourseDetail: {
-      screen: CourseDetailScreen,
-      navigationOptions: {
-        title: 'Details',
+const ParkMainPageStack = createStackNavigator({
+  ParkMain: {
+    screen: ParkMainScreen,
+    navigationOptions: props => {
+      return {
+        headerRight: <LogoutHeader navigation={props.navigation} />,
+        title: `${props.screenProps.selectedParkData.name}`,
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
-          backgroundColor: colorConstans.mainColor,
-        },
-      }
+          backgroundColor: colorConstans.mainColor
+        }
+      };
     }
   }
-);
+});
 
-FeedStack.navigationOptions = {
-  tabBarLabel: 'Feed',
+//밑에오는 이모티콘 및 설명
+ParkMainPageStack.navigationOptions = {
+  tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name='md-list-box'
-    />
+    <TabBarIcon focused={focused} name="md-list-box" />
   )
 };
 
-// FeedStack.path = '';
-
-// const RecordStack = createSwitchNavigator(
-//   {
-//     Record: RecordNavigator
-//   }
-// );
-
-// RecordStack.navigationOptions = {
-//   tabBarLabel: 'Record',
-//   // tabBarIcon: ({ focused }) => (
-//   //   <TabBarIcon
-//   //     focused={focused}
-//   //     name={'md-recording'}
-//   //   />
-//   // )
-// };
-
-const myCourseStack = createStackNavigator(
-  {
-    MyCourse: {
-      screen: MyCourseScreen,
-      navigationOptions: props => {
-        return {
-          headerRight: <LogoutHeader navigation={props.navigation} />,
-          title: 'myCourse',
-          headerTintColor: colorConstans.headerTextColor,
-          headerStyle: {
-            backgroundColor: colorConstans.mainColor,
-          },
-        };
-      }
-    },
-    CourseDetail: {
-      screen: CourseDetailScreen,
-      navigationOptions: {
-        title: 'My Course Details',
+const myCourseStack = createStackNavigator({
+  MyCourse: {
+    screen: MyCourseScreen,
+    navigationOptions: props => {
+      return {
+        headerRight: <LogoutHeader navigation={props.navigation} />,
+        title: 'myCourse',
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
-          backgroundColor: colorConstans.mainColor,
-        },
+          backgroundColor: colorConstans.mainColor
+        }
+      };
+    }
+  },
+  CourseDetail: {
+    screen: CourseDetailScreen,
+    navigationOptions: {
+      title: 'My Course Details',
+      headerTintColor: colorConstans.headerTextColor,
+      headerStyle: {
+        backgroundColor: colorConstans.mainColor
       }
     }
   }
-);
+});
 
 myCourseStack.navigationOptions = {
   tabBarLabel: 'myCourse',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={'md-archive'}
-    />
+    <TabBarIcon focused={focused} name={'md-archive'} />
+  )
+};
+
+
+const goToParkList = (props) => {
+  return props.navigation.navigate('ParkList');
+}
+goToParkList.navigationOptions = {
+  tabBarLabel: 'ParkList',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={'md-archive'} />
   )
 };
 
 const MainTabNavigator = createBottomTabNavigator(
   {
-    FeedStack,
-    // RecordStack,
-    myCourseStack
+    ParkMainPageStack,
+    myCourseStack,
+    goToParkList
   },
   {
-    initialRouteName: 'FeedStack'
+    initialRouteName: 'ParkMainPageStack'
   }
 );
 

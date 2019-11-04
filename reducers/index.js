@@ -1,4 +1,4 @@
-import { PARK_LIST } from '../constants/ActionTypes';
+import { PARK_LIST, SELECTED_PARK_DATA } from '../constants/ActionTypes';
 // import {
 //   COMPLETE_LOADING,
 //   INIT_RECORDING,
@@ -20,13 +20,16 @@ import { PARK_LIST } from '../constants/ActionTypes';
 // };
 
 const initialState = {
-  parkList: []
+  parkList: [],
+  selectedParkData : {},
 };
 
 export default reducer = (state = initialState, action) => {
   switch (action.type) {
     case PARK_LIST:
       return Object.assign({ ...state },{parkList: action.list});
+    case SELECTED_PARK_DATA:
+    return Object.assign({ ...state },{selectedParkData: action.data});
     default:
       return state;
   }

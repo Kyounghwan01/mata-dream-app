@@ -3,10 +3,10 @@ import { Alert } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
+import ParkListNavigator from './ParkListNavigotor';
 import LoginScreen from '../screens/LoginScreen';
 
 import loginLoadingScreen from '../screens/loginLoadingScreen';
-import ParkListScreen from '../screens/ParkListScreen';
 import { loginWithFacebook } from '../api';
 
 const LoginContainer = props => {
@@ -19,22 +19,18 @@ const LoginContainer = props => {
       Alert.alert(`Facebook Login Error: ${message}`);
     }
   };
-  return (
-    <LoginScreen 
-    onLoginButtonPress={facebookLogin} 
-    />
-  );
+  return <LoginScreen onLoginButtonPress={facebookLogin} />;
 };
 
 const AppNavigator = createSwitchNavigator(
   {
     //loginLoading: loginLoadingScreen,
     Login: LoginContainer,
-    ParkList : ParkListScreen,
-    Main: MainTabNavigator,
+    ParkList: ParkListNavigator,
+    Main: MainTabNavigator
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Login'
   }
 );
 

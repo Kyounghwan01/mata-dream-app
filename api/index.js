@@ -1,10 +1,12 @@
 import * as Facebook from 'expo-facebook';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
+import getEnvVars from '../environment';
+const { apiUrl, FB_appKey, authConst } = getEnvVars();
 
 export const loginWithFacebook = async () => {
   const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(
-    '713430802477350',
+    FB_appKey,
     {
       permissions: ['public_profile']
     }
@@ -14,7 +16,6 @@ export const loginWithFacebook = async () => {
     const user = await axios
       .get(
         `https://graph.facebook.com/me?access_token=${fbToken}&fields=id,name,picture.type(large)`
-        // authConstans.FB_GRAPH_URL(fbToken)
       )
       .then(res => res.data);
     // Object {
@@ -31,15 +32,15 @@ export const loginWithFacebook = async () => {
     // }
     const userToken = await getUserToken(user);
 
-    await SecureStore.setItemAsync('SOCIAL_ID', user.id);
-    await SecureStore.setItemAsync('FBTOKEN', fbToken);
-    await SecureStore.setItemAsync('USERTOKEN', userToken);
+    await SecureStore.setItemAsync(authConst.SOCIAL_ID, user.id);
+    await SecureStore.setItemAsync(authConst.FBTOKEN, fbToken);
+    await SecureStore.setItemAsync(authConst.USERTOKEN, userToken);
     return user;
   }
   function getUserToken(user) {
     return axios
       .post(
-        `http://localhost:3001/auth/login/facebook`,
+        `${apiUrl}/auth/login/facebook`,
         {
           socialService: 'FACEBOOK',
           socialId: user.id,
@@ -57,10 +58,10 @@ export const loginWithFacebook = async () => {
 };
 
 export const logoutAsync = async () => {
-  const userToken = await SecureStore.getItemAsync('USERTOKEN');
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   await axios
     .post(
-      `http://localhost:3001/auth/logout`,
+      `${apiUrl}/auth/logout`,
       {},
       {
         headers: {
@@ -70,22 +71,36 @@ export const logoutAsync = async () => {
       }
     )
     .then(async () => {
-      // await SecureStore.deleteItemAsync(authConstans.FBTOKEN);
-      // await SecureStore.deleteItemAsync(authConstans.USERTOKEN);
-      await SecureStore.deleteItemAsync('FBTOKEN');
-      await SecureStore.deleteItemAsync('USERTOKEN');
+      await SecureStore.deleteItemAsync(authConst.FBTOKEN);
+      await SecureStore.deleteItemAsync(authConst.USERTOKEN);
     });
 };
 
 export const getParkList = async () => {
-  const parkList = await axios.get(`http://localhost:3001/park`);
-  return parkList
-}
+  const parkList = await axios.get(`${apiUrl}/park`);
+  return parkList;
+};
+
+export const getUserData = async () => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const fbtoken = await SecureStore.getItemAsync(authConst.FBTOKEN);
+  const userData = await axios.get(`${apiUrl}/auth/user`, {
+    params: {
+      test: 'test입니다'
+    },
+    headers: {
+      userToken: 'Bearer ' + userToken,
+      socialId
+    }
+  });
+  console.log(userData.data.result);
+};
 
 export const test = async () => {
-  const userToken = await SecureStore.getItemAsync('USERTOKEN');
-  const socialId = await SecureStore.getItemAsync('SOCIAL_ID');
-  const a = await axios.get(`http://localhost:3001/auth/test`, {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const a = await axios.get(`${apiUrl}/auth/test`, {
     params: {
       test: 'test입니다'
     },
@@ -98,14 +113,13 @@ export const test = async () => {
   //get, or post 할때 검증을 위해 header값에 토큰을 넣어준다
 };
 
-
 export const getCoursesByLocation = async (
   pageNo,
   pageSize,
   currentLocation
 ) => {
-  const userToken = await SecureStore.getItemAsync('USERTOKEN');
-  const socialId = await SecureStore.getItemAsync('SOCIAL_ID');
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
 
   return axios
     .get(`${API_URL}/feeds`, {
