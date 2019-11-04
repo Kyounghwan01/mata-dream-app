@@ -57,32 +57,32 @@ export default App;
 //     this._getCamera();
 //       this._getLocationAsync();
 //   }
-//   _getLocationAsync = async () => {
-//     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-//     if (status !== 'granted') {
-//       this.setState({
-//         errorMessage: 'Permission to access location was denied',
-//       });
-//     }
+  // _getLocationAsync = async () => {
+  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  //   if (status !== 'granted') {
+  //     this.setState({
+  //       errorMessage: 'Permission to access location was denied',
+  //     });
+  //   }
 
-//     let location = await Location.getCurrentPositionAsync({});
-//     this.setState({ location : {latitude : location.coords.latitude, longitude : location.coords.longitude},
-//     marker : {
-//       latitude: location.coords.latitude,
-//       longitude: location.coords.longitude,
-//       title: 'Foo Place',
-//       subtitle: '1234 Foo Drive'
-//     },
-//     marker2 : {
-//       latitude: location.coords.latitude + 0.305,
-//       longitude: location.coords.longitude + 0.005,
-//       title: 'second place',
-//       subtitle: '1234 Foo Drive'
-//     }
-//    },function(){console.log(this.state.location.latitude)});
+  //   let location = await Location.getCurrentPositionAsync({});
+  //   this.setState({ location : {latitude : location.coords.latitude, longitude : location.coords.longitude},
+  //   marker : {
+  //     latitude: location.coords.latitude,
+  //     longitude: location.coords.longitude,
+  //     title: 'Foo Place',
+  //     subtitle: '1234 Foo Drive'
+  //   },
+  //   marker2 : {
+  //     latitude: location.coords.latitude + 0.305,
+  //     longitude: location.coords.longitude + 0.005,
+  //     title: 'second place',
+  //     subtitle: '1234 Foo Drive'
+  //   }
+  //  },function(){console.log(this.state.location.latitude)});
 
-//     this._getWeather(location.coords.latitude, location.coords.longitude);
-//   };
+  //   this._getWeather(location.coords.latitude, location.coords.longitude);
+  // };
 
 //   _getCamera = async () => {
 //     let { status } = await Permissions.askAsync(Permissions.CAMERA);
