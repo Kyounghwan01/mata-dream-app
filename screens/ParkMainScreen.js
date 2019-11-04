@@ -8,18 +8,33 @@ import {
   TouchableOpacity
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { test } from '../api';
-import Constants from 'expo-constants';
+import { getTempData, fetchAirData } from '../api';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+
+/*
+해야 하는거
+1. 내위치 마커 (완료)
+2. 미세먼지 온도(완료) 호출 api파일에 등록
+3. 이후 의뢰를 받으면 받은 redux props을 기반으로 마커 찍기
+*/
 
 export default class ParkMainScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      location: null
+    };
   }
   componentDidMount() {
-    console.log(this.props.screenProps.selectedParkData.location.latitude);
-    console.log(this.props.screenProps.selectedParkData.location.longitude);
+    this._getLocationAsync()
+    //대기온도
+    // getTempData(
+    //   this.props.screenProps.selectedParkData.location.latitude,
+    //   this.props.screenProps.selectedParkData.location.longitude
+    // ).then(res => console.log(res));
+    console.log(this.props.screenProps.selectedParkData);
+    fetchAirData();
   }
 
   _getLocationAsync = async () => {
@@ -55,36 +70,47 @@ export default class ParkMainScreen extends Component {
       }
     );
 
-    this._getWeather(location.coords.latitude, location.coords.longitude);
+    // this._getWeather(location.coords.latitude, location.coords.longitude);
   };
 
   render() {
     return (
       <View>
         <Text>강리스트오는자리입니다</Text>
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={{ width: '80%', height: '60%' }}
-          region={{
-            latitude: this.props.screenProps.selectedParkData.location.latitude,
-            longitude: this.props.screenProps.selectedParkData.location
-              .longitude,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.0121
-          }}
-        >
-          <Marker
-            draggable
-            coordinate={{
+        {this.state.location ? (
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={{ width: '80%', height: '60%' }}
+            region={{
               latitude: this.props.screenProps.selectedParkData.location
                 .latitude,
               longitude: this.props.screenProps.selectedParkData.location
-                .longitude
+                .longitude,
+              latitudeDelta: 0.22,
+              longitudeDelta: 0.0121
             }}
-            description="한강공원 중심"
-            onDragEnd={e => console.log(e)}
-          ></Marker>
-          {/* <Marker
+          >
+            <Marker
+              draggable
+              coordinate={{
+                latitude: this.state.location.latitude,
+                longitude: this.state.location.longitude
+              }}
+              description="내 위치"
+              onDragEnd={e => console.log(e)}
+            ></Marker>
+            <Marker
+              draggable
+              coordinate={{
+                latitude: this.props.screenProps.selectedParkData.location
+                  .latitude,
+                longitude: this.props.screenProps.selectedParkData.location
+                  .longitude
+              }}
+              description="한강공원 중심"
+              onDragEnd={e => console.log(e)}
+            ></Marker>
+            {/* <Marker
               draggable
               coordinate={this.state.marker}
               description="이곳은 마커가 오는 자리입니다"
@@ -96,7 +122,10 @@ export default class ParkMainScreen extends Component {
               description="이곳은 마커가 오는 자리입니다"
               onDragEnd={e => console.log(e)}
             ></Marker> */}
-        </MapView>
+          </MapView>
+        ) : (
+          <Text>기달</Text>
+        )}
       </View>
     );
   }

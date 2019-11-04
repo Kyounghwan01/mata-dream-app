@@ -30,7 +30,7 @@ export default App;
 // import { Camera } from 'expo-camera';
 // import axios from 'axios';
 
-// const WEATHER_API_KEY = "566758fdfefa4f7755240c7c1f060b10";
+// const API_KEY = "566758fdfefa4f7755240c7c1f060b10";
 
 // export default class App extends Component {
 //   constructor(props) {
@@ -57,32 +57,32 @@ export default App;
 //     this._getCamera();
 //       this._getLocationAsync();
 //   }
-  // _getLocationAsync = async () => {
-  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //   if (status !== 'granted') {
-  //     this.setState({
-  //       errorMessage: 'Permission to access location was denied',
-  //     });
-  //   }
+//   _getLocationAsync = async () => {
+//     let { status } = await Permissions.askAsync(Permissions.LOCATION);
+//     if (status !== 'granted') {
+//       this.setState({
+//         errorMessage: 'Permission to access location was denied',
+//       });
+//     }
 
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   this.setState({ location : {latitude : location.coords.latitude, longitude : location.coords.longitude},
-  //   marker : {
-  //     latitude: location.coords.latitude,
-  //     longitude: location.coords.longitude,
-  //     title: 'Foo Place',
-  //     subtitle: '1234 Foo Drive'
-  //   },
-  //   marker2 : {
-  //     latitude: location.coords.latitude + 0.305,
-  //     longitude: location.coords.longitude + 0.005,
-  //     title: 'second place',
-  //     subtitle: '1234 Foo Drive'
-  //   }
-  //  },function(){console.log(this.state.location.latitude)});
+//     let location = await Location.getCurrentPositionAsync({});
+//     this.setState({ location : {latitude : location.coords.latitude, longitude : location.coords.longitude},
+//     marker : {
+//       latitude: location.coords.latitude,
+//       longitude: location.coords.longitude,
+//       title: 'Foo Place',
+//       subtitle: '1234 Foo Drive'
+//     },
+//     marker2 : {
+//       latitude: location.coords.latitude + 0.305,
+//       longitude: location.coords.longitude + 0.005,
+//       title: 'second place',
+//       subtitle: '1234 Foo Drive'
+//     }
+//    },function(){console.log(this.state.location.latitude)});
 
-  //   this._getWeather(location.coords.latitude, location.coords.longitude);
-  // };
+//     this._getWeather(location.coords.latitude, location.coords.longitude);
+//   };
 
 //   _getCamera = async () => {
 //     let { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -92,7 +92,7 @@ export default App;
 //   _getWeather = async(lat, long) => {
 //     await fetch(
 //       //literal 은 ''가 아니고 ``임!
-//         `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${WEATHER_API_KEY}`
+//         `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${API_KEY}`
 //       )
 //       .then(response => response.json())
 //       .then(json => {

@@ -17,7 +17,7 @@ const AuthLoadingScreen = props => {
     if (!isLoadingComplete) {
       await Promise.all([
         Asset.loadAsync([
-          require('../assets/background.png')
+          require('../assets/background.jpg')
         ]),
         Permissions.askAsync(
           Permissions.CAMERA_ROLL,

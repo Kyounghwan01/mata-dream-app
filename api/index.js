@@ -2,7 +2,7 @@ import * as Facebook from 'expo-facebook';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import getEnvVars from '../environment';
-const { apiUrl, FB_appKey, authConst } = getEnvVars();
+const { apiUrl, FB_appKey, authConst, weather_API_KEY, air_API_KEY } = getEnvVars();
 
 export const loginWithFacebook = async () => {
   const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(
@@ -97,21 +97,21 @@ export const getUserData = async () => {
   console.log(userData.data.result);
 };
 
-export const test = async () => {
-  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
-  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-  const a = await axios.get(`${apiUrl}/auth/test`, {
-    params: {
-      test: 'test입니다'
-    },
-    headers: {
-      userToken: 'Bearer ' + userToken,
-      socialId
-    }
-  });
-  console.log(a.data.message);
-  //get, or post 할때 검증을 위해 header값에 토큰을 넣어준다
+export const getTempData = async (lat, long) => {
+  const data = await fetch(
+    `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${weather_API_KEY}`
+  ).then(res => res.json());
+  return data;
 };
+
+export const fetchAirData = async () => {
+  const res = await axios(
+    `http://openapi.seoul.go.kr:8088/${air_API_KEY}/json/RealtimeCityAir/1/5/%EB%8F%99%EB%B6%81%EA%B6%8C/%EC%84%B1%EB%B6%81%EA%B5%AC`
+  );
+  console.log(res);
+};
+
+
 
 export const getCoursesByLocation = async (
   pageNo,

@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { getParkList, getUserData } from '../api';
-import {StyleSheet, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  Image
+} from 'react-native';
 import { Icon, Button, Text, View } from 'native-base';
 
 export default class ParkListScreen extends Component {
@@ -16,22 +22,46 @@ export default class ParkListScreen extends Component {
     getAsync();
   }
 
-  goToParkData = async (data) =>{
+  goToParkData = async data => {
     await this.props.screenProps.getParkData(data);
-    this.props.navigation.navigate('Main')
-  }
+    this.props.navigation.navigate('Main');
+  };
 
   render() {
+    const qwe = 'background'
     return (
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView>
         {this.props.screenProps.parkList ? (
-          <ScrollView >
+          <ScrollView>
             {this.props.screenProps.parkList.map((data, list) => {
+              var imageAddress = [
+                require('../assets/잠실한강공원.jpg'),
+                require('../assets/뚝섬한강공원.jpg'),
+                require('../assets/이촌한강공원.jpg'),
+                require('../assets/반포한강공원.jpg'),
+                require('../assets/qwe.jpg')
+            ]
               return (
-                <TouchableOpacity key={list} style={{height:300, backgroundColor:'grey', margin:10}} onPress={()=>{this.goToParkData(data)}}>
-                  <Text>{data.address}</Text>
-                  <Text>{data.name}</Text>
+                <TouchableOpacity
+                  key={list}
+                  style={styles.touchable}
+                  onPress={() => {
+                    this.goToParkData(data);
+                  }}
+                >
+                  <Image
+                    source={imageAddress[list]}
+                    style={styles.image}
+                  />
+                  <View style={styles.view}>
+                    <Text style={styles.ParkContainerText}>{data.name}</Text>
+                    <Text style={styles.ParkContainerAdd}>{data.address}</Text>
+                  </View>
                 </TouchableOpacity>
+                // <TouchableOpacity key={list} style={styles.ParkContainer} onPress={()=>{this.goToParkData(data)}}>
+                //   <Text style={styles.ParkContainerText}>{data.name}</Text>
+                //   <Text style={styles.ParkContainerAdd}>{data.address}</Text>
+                // </TouchableOpacity>
               );
             })}
           </ScrollView>
@@ -42,5 +72,39 @@ export default class ParkListScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  
-})
+  view: {
+    position: 'absolute'
+  },
+  image: {
+    width: 350,
+    height: 150,
+    margin: 10,
+  },
+  touchable: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30
+  },
+  ParkContainer: {
+    display: 'flex',
+    // justifyContent: 'center',
+    // height: 200,
+    backgroundColor: 'grey',
+    margin: 10,
+    borderRadius: 30
+  },
+  ParkContainerAdd: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: 'white'
+  },
+  ParkContainerText: {
+    textAlign: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 10,
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
+});
