@@ -46,6 +46,7 @@ export default class ParkMainScreen extends Component {
       <View>
         <Text>강리스트오는자리입니다</Text>
         {this.props.screenProps.userLocation ? (
+          <View>
           <MapView
             provider={PROVIDER_GOOGLE}
             style={{ width: '80%', height: '60%' }}
@@ -94,6 +95,9 @@ export default class ParkMainScreen extends Component {
               onDragEnd={e => console.log(e)}
             ></Marker> */}
           </MapView>
+
+
+          </View>
         ) : (
           <ActivityIndicator size="large" color={colorConstans.mainColor} />
         )}

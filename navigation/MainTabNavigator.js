@@ -10,6 +10,7 @@ import ParkMainScreen from '../screens/ParkMainScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import OrderListScreen from '../screens/OrderListScreen';
 import LogoutButton from '../components/LogoutButton';
+import MataDreamNavigator from '../navigation/MataDreamNavigator';
 
 import { logoutAsync } from '../api';
 
@@ -53,23 +54,34 @@ ParkMainPageStack.navigationOptions = {
   )
 };
 
-const mataDreamStack = createStackNavigator({
-  MyCourse: {
-    screen: OrderListScreen,
-    navigationOptions: props => {
-      return {
-        headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: 'Mata-Dream',
-        headerTintColor: colorConstans.headerTextColor,
-        headerStyle: {
-          backgroundColor: colorConstans.mainColor
-        }
-      };
-    }
-  }
-});
+// const mataDreamStack = createStackNavigator({
+//   MyCourse: {
+//     screen: OrderListScreen,
+//     navigationOptions: props => {
+//       return {
+//         headerRight: <LogoutHeader navigation={props.navigation} />,
+//         title: 'Mata-Dream',
+//         headerTintColor: colorConstans.headerTextColor,
+//         headerStyle: {
+//           backgroundColor: colorConstans.mainColor
+//         }
+//       };
+//     }
+//   }
+// });
 
-mataDreamStack.navigationOptions = {
+// mataDreamStack.navigationOptions = {
+//   tabBarLabel: 'mataDream',
+//   tabBarOptions: {
+//     activeTintColor: colorConstans.mainColor,
+//     inactiveTintColor: 'grey',
+//   },
+//   tabBarIcon: ({ focused }) => (
+//     <TabBarIcon focused={focused} name={'ios-list-box'} />
+//   )
+// };
+
+MataDreamNavigator.navigationOptions = {
   tabBarLabel: 'mataDream',
   tabBarOptions: {
     activeTintColor: colorConstans.mainColor,
@@ -79,7 +91,6 @@ mataDreamStack.navigationOptions = {
     <TabBarIcon focused={focused} name={'ios-list-box'} />
   )
 };
-
 
 const goToParkList = (props) => {
   return props.navigation.navigate('ParkList');
@@ -98,7 +109,7 @@ goToParkList.navigationOptions = {
 const MainTabNavigator = createBottomTabNavigator(
   {
     ParkMainPageStack,
-    mataDreamStack,
+    MataDreamNavigator,
     goToParkList
   },
   {
