@@ -45,7 +45,7 @@ export default class ParkMainScreen extends Component {
     return (
       <View>
         <Text>강리스트오는자리입니다</Text>
-        {this.props.screenProps.userLocation ? (
+        {this.props.screenProps.userData ? (
           <View>
           <MapView
             provider={PROVIDER_GOOGLE}
@@ -55,15 +55,15 @@ export default class ParkMainScreen extends Component {
                 .latitude,
               longitude: this.props.screenProps.selectedParkData.location
                 .longitude,
-              latitudeDelta: 0.22,
-              longitudeDelta: 0.0121
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.0321
             }}
           >
             <Marker
               draggable
               coordinate={{
-                latitude: this.props.screenProps.userLocation.latitude,
-                longitude: this.props.screenProps.userLocation.longitude
+                latitude: this.props.screenProps.userData.latitude,
+                longitude: this.props.screenProps.userData.longitude
               }}
               description="내 위치"
               onDragEnd={e => console.log(e)}

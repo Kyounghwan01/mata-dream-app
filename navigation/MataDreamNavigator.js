@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   createStackNavigator,
-  createBottomTabNavigator,
   createSwitchNavigator,
   createAppContainer
 } from 'react-navigation';
@@ -99,7 +98,7 @@ const MataDreamNavigator = createSwitchNavigator(
     Chat : Chat
   },
   {
-    initialRouteName: 'List'
+    initialRouteName: 'Enroll'
   }
 );
 

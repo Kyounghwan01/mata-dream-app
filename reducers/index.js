@@ -26,7 +26,7 @@ import {
 const initialState = {
   parkList: [],
   selectedParkData: {},
-  userLocation: {}
+  userData: {}
 };
 
 export default reducer = (state = initialState, action) => {
@@ -36,7 +36,7 @@ export default reducer = (state = initialState, action) => {
     case SELECTED_PARK_DATA:
       return Object.assign({ ...state }, { selectedParkData: action.data });
     case USER_LOCATION_DATA:
-      return Object.assign({ ...state }, { userLocation: action.data });
+      return Object.assign({ ...state }, { userData: action.data });
     default:
       return state;
   }

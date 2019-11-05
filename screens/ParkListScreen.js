@@ -17,16 +17,16 @@ export default class ParkListScreen extends Component {
     super(props);
   }
   componentDidMount() {
-    // getUserData();
-    const getAsync = async () => {
-      const res = await getParkList();
-      this.props.screenProps.getParkList(res.data.parkList);
-
-    };
-    getAsync();
+    this._getParkListAsync();
     this._getLocationAsync();
   }
+  _getParkListAsync = async () => {
+    const res = await getParkList();
+    this.props.screenProps.getParkList(res.data.parkList);
+  };
   _getLocationAsync = async () => {
+    const userData = await getUserData();
+
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
@@ -35,7 +35,8 @@ export default class ParkListScreen extends Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.props.screenProps.getUserLocation({latitude : location.coords.latitude, longitude : location.coords.longitude});
+
+    this.props.screenProps.getUserData({name : userData.name, id : userData._id, latitude : location.coords.latitude, longitude : location.coords.longitude});
 
     // this._getWeather(location.coords.latitude, location.coords.longitude);
   };
@@ -46,7 +47,6 @@ export default class ParkListScreen extends Component {
   };
 
   render() {
-    const qwe = 'background'
     return (
       <SafeAreaView>
         {this.props.screenProps.parkList ? (

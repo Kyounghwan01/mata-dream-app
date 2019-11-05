@@ -84,7 +84,6 @@ export const getParkList = async () => {
 export const getUserData = async () => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-  const fbtoken = await SecureStore.getItemAsync(authConst.FBTOKEN);
   const userData = await axios.get(`${apiUrl}/auth/user`, {
     params: {
       test: 'test입니다'
@@ -94,7 +93,7 @@ export const getUserData = async () => {
       socialId
     }
   });
-  //console.log(userData.data.result);
+  return userData.data.result;
 };
 
 export const getTempData = async (lat, long) => {
@@ -104,35 +103,27 @@ export const getTempData = async (lat, long) => {
   return data;
 };
 
+//안됨
+export const getImageUrl = async (imageData) => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  return axios.post(
+    `${apiUrl}/park/seats`,
+    imageData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'userToken': 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  ).then(res => res.data.imageUrl);
+  //.then(({ data }) => data.imageUrl);
+};
+
 export const fetchAirData = async () => {
   const res = await axios(
     `http://openapi.seoul.go.kr:8088/${air_API_KEY}/json/RealtimeCityAir/1/5/%EB%8F%99%EB%B6%81%EA%B6%8C/%EC%84%B1%EB%B6%81%EA%B5%AC`
   );
   //console.log(res);
 };
-
-
-
-// export const getCoursesByLocation = async (
-//   pageNo,
-//   pageSize,
-//   currentLocation
-// ) => {
-//   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
-//   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-
-//   return axios
-//     .get(`${API_URL}/feeds`, {
-//       params: {
-//         pageNo,
-//         pageSize,
-//         lon: currentLocation[0],
-//         lat: currentLocation[1]
-//       },
-//       headers: {
-//         userToken: 'Bearer ' + userToken,
-//         socialId
-//       }
-//     })
-//     .then(res => res.data);
-// };
