@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, FlatList } from 'react-native';
 
-export default class MyCourseScreen extends Component {
+export default class OrderListScreen extends Component {
   render() {
     return (
       <View>

@@ -8,6 +8,9 @@ import {
   Image
 } from 'react-native';
 import { Icon, Button, Text, View } from 'native-base';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import colorConstans from '../constants/Colors';
 
 export default class ParkListScreen extends Component {
   constructor(props) {
@@ -18,9 +21,24 @@ export default class ParkListScreen extends Component {
     const getAsync = async () => {
       const res = await getParkList();
       this.props.screenProps.getParkList(res.data.parkList);
+
     };
     getAsync();
+    this._getLocationAsync();
   }
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied'
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.props.screenProps.getUserLocation({latitude : location.coords.latitude, longitude : location.coords.longitude});
+
+    // this._getWeather(location.coords.latitude, location.coords.longitude);
+  };
 
   goToParkData = async data => {
     await this.props.screenProps.getParkData(data);

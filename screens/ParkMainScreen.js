@@ -5,17 +5,19 @@ import {
   Text,
   View,
   Button,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { getTempData, fetchAirData } from '../api';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import colorConstans from '../constants/Colors';
 
 /*
 해야 하는거
 1. 내위치 마커 (완료)
-2. 미세먼지 온도(완료) 호출 api파일에 등록
+2. 미세먼지 온도(완료) 호출 api파일에 등록 (완료)
 3. 이후 의뢰를 받으면 받은 redux props을 기반으로 마커 찍기
 */
 
@@ -27,57 +29,23 @@ export default class ParkMainScreen extends Component {
     };
   }
   componentDidMount() {
-    this._getLocationAsync()
+    //this._getLocationAsync()
     //대기온도
     // getTempData(
     //   this.props.screenProps.selectedParkData.location.latitude,
     //   this.props.screenProps.selectedParkData.location.longitude
     // ).then(res => console.log(res));
-    console.log(this.props.screenProps.selectedParkData);
-    fetchAirData();
+    //console.log(this.props.screenProps.selectedParkData);
+
+    //미세먼지
+    //fetchAirData();
   }
-
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied'
-      });
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState(
-      {
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude
-        },
-        marker: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          title: 'Foo Place',
-          subtitle: '1234 Foo Drive'
-        },
-        marker2: {
-          latitude: location.coords.latitude + 0.305,
-          longitude: location.coords.longitude + 0.005,
-          title: 'second place',
-          subtitle: '1234 Foo Drive'
-        }
-      },
-      function() {
-        console.log(this.state.location.latitude);
-      }
-    );
-
-    // this._getWeather(location.coords.latitude, location.coords.longitude);
-  };
 
   render() {
     return (
       <View>
         <Text>강리스트오는자리입니다</Text>
-        {this.state.location ? (
+        {this.props.screenProps.userLocation ? (
           <MapView
             provider={PROVIDER_GOOGLE}
             style={{ width: '80%', height: '60%' }}
@@ -93,23 +61,26 @@ export default class ParkMainScreen extends Component {
             <Marker
               draggable
               coordinate={{
-                latitude: this.state.location.latitude,
-                longitude: this.state.location.longitude
+                latitude: this.props.screenProps.userLocation.latitude,
+                longitude: this.props.screenProps.userLocation.longitude
               }}
               description="내 위치"
               onDragEnd={e => console.log(e)}
             ></Marker>
-            <Marker
-              draggable
-              coordinate={{
-                latitude: this.props.screenProps.selectedParkData.location
-                  .latitude,
-                longitude: this.props.screenProps.selectedParkData.location
-                  .longitude
-              }}
-              description="한강공원 중심"
-              onDragEnd={e => console.log(e)}
-            ></Marker>
+            {
+              this.props.screenProps.selectedParkData ? (<Marker
+                draggable
+                coordinate={{
+                  latitude: this.props.screenProps.selectedParkData.location
+                    .latitude,
+                  longitude: this.props.screenProps.selectedParkData.location
+                    .longitude
+                }}
+                description="한강공원 중심"
+                onDragEnd={e => console.log(e)}
+              ></Marker>) : null
+            }
+            
             {/* <Marker
               draggable
               coordinate={this.state.marker}
@@ -124,7 +95,7 @@ export default class ParkMainScreen extends Component {
             ></Marker> */}
           </MapView>
         ) : (
-          <Text>기달</Text>
+          <ActivityIndicator size="large" color={colorConstans.mainColor} />
         )}
       </View>
     );

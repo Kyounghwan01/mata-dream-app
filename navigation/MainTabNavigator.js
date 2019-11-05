@@ -8,7 +8,7 @@ import {
 
 import ParkMainScreen from '../screens/ParkMainScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
-import MyCourseScreen from '../screens/MyCourseScreen';
+import OrderListScreen from '../screens/OrderListScreen';
 import LogoutButton from '../components/LogoutButton';
 
 import { logoutAsync } from '../api';
@@ -44,41 +44,39 @@ const ParkMainPageStack = createStackNavigator({
 //밑에오는 이모티콘 및 설명
 ParkMainPageStack.navigationOptions = {
   tabBarLabel: 'Home',
+  tabBarOptions: {
+    activeTintColor: colorConstans.mainColor,
+    inactiveTintColor: 'grey',
+  },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name="md-list-box" />
+    <TabBarIcon focused={focused} name="md-home" />
   )
 };
 
-const myCourseStack = createStackNavigator({
+const mataDreamStack = createStackNavigator({
   MyCourse: {
-    screen: MyCourseScreen,
+    screen: OrderListScreen,
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: 'myCourse',
+        title: 'Mata-Dream',
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
         }
       };
     }
-  },
-  CourseDetail: {
-    screen: CourseDetailScreen,
-    navigationOptions: {
-      title: 'My Course Details',
-      headerTintColor: colorConstans.headerTextColor,
-      headerStyle: {
-        backgroundColor: colorConstans.mainColor
-      }
-    }
   }
 });
 
-myCourseStack.navigationOptions = {
-  tabBarLabel: 'myCourse',
+mataDreamStack.navigationOptions = {
+  tabBarLabel: 'mataDream',
+  tabBarOptions: {
+    activeTintColor: colorConstans.mainColor,
+    inactiveTintColor: 'grey',
+  },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'md-archive'} />
+    <TabBarIcon focused={focused} name={'ios-list-box'} />
   )
 };
 
@@ -88,15 +86,19 @@ const goToParkList = (props) => {
 }
 goToParkList.navigationOptions = {
   tabBarLabel: 'ParkList',
+  tabBarOptions: {
+    activeTintColor: colorConstans.mainColor,
+    inactiveTintColor: 'grey',
+  },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'md-archive'} />
+    <TabBarIcon focused={focused} name={'ios-list'} />
   )
 };
 
 const MainTabNavigator = createBottomTabNavigator(
   {
     ParkMainPageStack,
-    myCourseStack,
+    mataDreamStack,
     goToParkList
   },
   {

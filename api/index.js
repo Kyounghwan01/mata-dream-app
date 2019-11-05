@@ -94,7 +94,7 @@ export const getUserData = async () => {
       socialId
     }
   });
-  console.log(userData.data.result);
+  //console.log(userData.data.result);
 };
 
 export const getTempData = async (lat, long) => {
@@ -108,31 +108,31 @@ export const fetchAirData = async () => {
   const res = await axios(
     `http://openapi.seoul.go.kr:8088/${air_API_KEY}/json/RealtimeCityAir/1/5/%EB%8F%99%EB%B6%81%EA%B6%8C/%EC%84%B1%EB%B6%81%EA%B5%AC`
   );
-  console.log(res);
+  //console.log(res);
 };
 
 
 
-export const getCoursesByLocation = async (
-  pageNo,
-  pageSize,
-  currentLocation
-) => {
-  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
-  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+// export const getCoursesByLocation = async (
+//   pageNo,
+//   pageSize,
+//   currentLocation
+// ) => {
+//   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+//   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
 
-  return axios
-    .get(`${API_URL}/feeds`, {
-      params: {
-        pageNo,
-        pageSize,
-        lon: currentLocation[0],
-        lat: currentLocation[1]
-      },
-      headers: {
-        userToken: 'Bearer ' + userToken,
-        socialId
-      }
-    })
-    .then(res => res.data);
-};
+//   return axios
+//     .get(`${API_URL}/feeds`, {
+//       params: {
+//         pageNo,
+//         pageSize,
+//         lon: currentLocation[0],
+//         lat: currentLocation[1]
+//       },
+//       headers: {
+//         userToken: 'Bearer ' + userToken,
+//         socialId
+//       }
+//     })
+//     .then(res => res.data);
+// };
