@@ -9,7 +9,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { getTempData, fetchAirData } from '../api';
+import { getTempData, fetchAirData, getParkOrderList } from '../api';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import colorConstans from '../constants/Colors';
@@ -29,6 +29,10 @@ export default class ParkMainScreen extends Component {
     };
   }
   componentDidMount() {
+
+    this.test();
+
+
     //this._getLocationAsync()
     //대기온도
     // getTempData(
@@ -38,6 +42,10 @@ export default class ParkMainScreen extends Component {
     //console.log(this.props.screenProps.selectedParkData);
     //미세먼지
     //fetchAirData();
+  }
+  test = async () => {
+    const list = await getParkOrderList(this.props.screenProps.selectedParkData._id);
+    this.props.screenProps.getParkOrderList(list.parkList);
   }
 
   render() {
@@ -55,7 +63,7 @@ export default class ParkMainScreen extends Component {
                 longitude: this.props.screenProps.selectedParkData.location
                   .longitude,
                 latitudeDelta: 0.01,
-                longitudeDelta: 0.0321
+                longitudeDelta: 0.01
               }}
             >
               <Marker

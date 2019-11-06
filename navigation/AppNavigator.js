@@ -14,7 +14,7 @@ import ChatScreen from '../screens/ChatScreen';
 import colorConstans from '../constants/Colors';
 
 import loginLoadingScreen from '../screens/loginLoadingScreen';
-import { loginWithFacebook } from '../api';
+import { loginWithFacebook, logoutAsync } from '../api';
 
 import ParkListScreen from '../screens/ParkListScreen';
 
@@ -61,7 +61,7 @@ const ChatNavigator = createStackNavigator({
     screen: ChatScreen,
     navigationOptions: props => {
       return {
-        headerRight: <LogoutHeader navigation={props.navigation} />,
+        //headerRight: <LogoutHeader navigation={props.navigation} />,
         headerLeft: (
           <BackButton
           goBackButtonClick={() => props.navigation.navigate('List')}

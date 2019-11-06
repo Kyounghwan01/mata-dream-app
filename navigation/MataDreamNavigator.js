@@ -25,7 +25,7 @@ const LogoutHeader = props => {
   return <LogoutButton onLogoutButtonClick={requestLogout} />;
 };
 
-const MataDream = createStackNavigator({
+const orderList = createStackNavigator({
   MyCourse: {
     screen: OrderListScreen,
     navigationOptions: props => {
@@ -52,7 +52,7 @@ const EnrollOrder = createStackNavigator({
           goBackButtonClick={() => props.navigation.navigate('List')}
           />
         ),
-        title: 'Enroll-Order',
+        title: `MATA-DREAM 등록`,
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
@@ -85,12 +85,12 @@ const ViewOrder = createStackNavigator({
 
 const MataDreamNavigator = createSwitchNavigator(
   {
-    List: MataDream,
+    List: orderList,
     Enroll: EnrollOrder,
     View: ViewOrder
   },
   {
-    initialRouteName: 'Enroll'
+    initialRouteName: 'List'
   }
 );
 

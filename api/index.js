@@ -45,6 +45,7 @@ export const loginWithFacebook = async () => {
     //   },
     // }
     const userToken = await getUserToken(user);
+    console.log(userToken);
 
     await SecureStore.setItemAsync(authConst.SOCIAL_ID, user.id);
     await SecureStore.setItemAsync(authConst.FBTOKEN, fbToken);
@@ -158,3 +159,15 @@ export const fetchAirData = async () => {
   );
   //console.log(res);
 };
+
+export const getParkOrderList = async (parkId) => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const res = await axios.get(`${apiUrl}/park/seats/${parkId}`,{
+    headers: {
+      userToken: 'Bearer ' + userToken,
+      socialId
+    }
+  });
+  return res.data;
+}

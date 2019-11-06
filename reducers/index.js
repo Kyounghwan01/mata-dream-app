@@ -1,7 +1,8 @@
 import {
   PARK_LIST,
   SELECTED_PARK_DATA,
-  USER_LOCATION_DATA
+  USER_LOCATION_DATA,
+  PARK_ORDER_LIST
 } from '../constants/ActionTypes';
 // import {
 //   COMPLETE_LOADING,
@@ -26,7 +27,8 @@ import {
 const initialState = {
   parkList: [],
   selectedParkData: {},
-  userData: {}
+  userData: {},
+  parkOrderList : []
 };
 
 export default reducer = (state = initialState, action) => {
@@ -37,6 +39,8 @@ export default reducer = (state = initialState, action) => {
       return Object.assign({ ...state }, { selectedParkData: action.data });
     case USER_LOCATION_DATA:
       return Object.assign({ ...state }, { userData: action.data });
+    case PARK_ORDER_LIST:
+      return Object.assign({ ...state }, { parkOrderList: action.data });
     default:
       return state;
   }
