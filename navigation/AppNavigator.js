@@ -1,13 +1,22 @@
 import React from 'react';
 import { Alert } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  createStackNavigator
+} from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import ParkListNavigator from './ParkListNavigotor';
 import LoginScreen from '../screens/LoginScreen';
+import LogoutButton from '../components/LogoutButton';
+import BackButton from '../components/BackButton';
+import ChatScreen from '../screens/ChatScreen';
+import colorConstans from '../constants/Colors';
 
 import loginLoadingScreen from '../screens/loginLoadingScreen';
 import { loginWithFacebook } from '../api';
+
+import ParkListScreen from '../screens/ParkListScreen';
 
 const LoginContainer = props => {
   const facebookLogin = async () => {
@@ -22,12 +31,59 @@ const LoginContainer = props => {
   return <LoginScreen onLoginButtonPress={facebookLogin} />;
 };
 
+const LogoutHeader = props => {
+  const requestLogout = async () => {
+    await logoutAsync();
+    props.navigation.navigate('Login');
+  };
+
+  return <LogoutButton onLogoutButtonClick={requestLogout} />;
+};
+
+const ParkListStack = createStackNavigator({
+  ParkList: {
+    screen: ParkListScreen,
+    navigationOptions: props => {
+      return {
+        headerRight: <LogoutHeader navigation={props.navigation} />,
+        title: 'Park-List',
+        headerTintColor: colorConstans.headerTextColor,
+        headerStyle: {
+          backgroundColor: colorConstans.mainColor
+        }
+      };
+    }
+  }
+});
+
+const ChatNavigator = createStackNavigator({
+  MyCourse: {
+    screen: ChatScreen,
+    navigationOptions: props => {
+      return {
+        headerRight: <LogoutHeader navigation={props.navigation} />,
+        headerLeft: (
+          <BackButton
+          goBackButtonClick={() => props.navigation.navigate('List')}
+          />
+        ),
+        title: 'Chat-View',
+        headerTintColor: colorConstans.headerTextColor,
+        headerStyle: {
+          backgroundColor: colorConstans.mainColor
+        }
+      };
+    }
+  }
+});
+
 const AppNavigator = createSwitchNavigator(
   {
     //loginLoading: loginLoadingScreen,
     Login: LoginContainer,
-    ParkList: ParkListNavigator,
-    Main: MainTabNavigator
+    ParkList: ParkListStack,
+    Main: MainTabNavigator,
+    ChatScreen: ChatNavigator
   },
   {
     initialRouteName: 'Login'

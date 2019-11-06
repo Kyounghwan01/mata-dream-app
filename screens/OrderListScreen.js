@@ -5,6 +5,11 @@ export default class OrderListScreen extends Component {
   constructor(props){
     super(props);
   }
+  componentDidMount(){
+    //switch는 계속 호출된다.
+    console.log("호출");
+  }
+
   render() {
     return (
       <View>

@@ -9,7 +9,7 @@ export default class ViewOrderScreen extends Component {
     return (
       <View>
         <Text>ViewOrderScreen</Text>
-        <Button title="채팅뷰 버튼" onPress={()=>this.props.navigation.navigate('Chat')}/>
+        <Button title="채팅뷰 버튼" onPress={()=>this.props.navigation.navigate('ChatScreen')}/>
         <Button title="리스트로 버튼" onPress={()=>this.props.navigation.navigate('List')}/>
       </View>
     )

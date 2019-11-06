@@ -6,12 +6,11 @@ import {
 } from 'react-navigation';
 
 import ParkMainScreen from '../screens/ParkMainScreen';
-import CourseDetailScreen from '../screens/CourseDetailScreen';
 import OrderListScreen from '../screens/OrderListScreen';
 import EnrollOrderScreen from '../screens/EnrollOrderScreen';
 import ViewOrderScreen from '../screens/ViewOrderScreen';
-import ChatScreen from '../screens/ChatScreen';
 import LogoutButton from '../components/LogoutButton';
+import BackButton from '../components/BackButton';
 
 import { logoutAsync } from '../api';
 
@@ -48,6 +47,11 @@ const EnrollOrder = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
+        headerLeft: (
+          <BackButton
+          goBackButtonClick={() => props.navigation.navigate('List')}
+          />
+        ),
         title: 'Enroll-Order',
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
@@ -64,23 +68,12 @@ const ViewOrder = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
+        headerLeft: (
+          <BackButton
+          goBackButtonClick={() => props.navigation.navigate('List')}
+          />
+        ),
         title: 'View-Order',
-        headerTintColor: colorConstans.headerTextColor,
-        headerStyle: {
-          backgroundColor: colorConstans.mainColor
-        }
-      };
-    }
-  }
-});
-
-const Chat = createStackNavigator({
-  MyCourse: {
-    screen: ChatScreen,
-    navigationOptions: props => {
-      return {
-        headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: 'Chat-View',
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
@@ -94,8 +87,7 @@ const MataDreamNavigator = createSwitchNavigator(
   {
     List: MataDream,
     Enroll: EnrollOrder,
-    View: ViewOrder,
-    Chat : Chat
+    View: ViewOrder
   },
   {
     initialRouteName: 'Enroll'

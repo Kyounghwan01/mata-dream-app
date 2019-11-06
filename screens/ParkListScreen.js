@@ -27,16 +27,27 @@ export default class ParkListScreen extends Component {
   _getLocationAsync = async () => {
     const userData = await getUserData();
 
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+    await Permissions.askAsync(Permissions.LOCATION);
+    await Permissions.askAsync(Permissions.CAMERA);
+
+    const { status, expires } = await Permissions.getAsync(
+      Permissions.LOCATION,
+      Permissions.CAMERA_ROLL,
+      Permissions.CAMERA
+    );
     if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied'
-      });
+      alert('Hey! You heve not enabled selected permissions');
     }
 
     let location = await Location.getCurrentPositionAsync({});
 
-    this.props.screenProps.getUserData({name : userData.name, id : userData._id, latitude : location.coords.latitude, longitude : location.coords.longitude});
+    this.props.screenProps.getUserData({
+      name: userData.name,
+      id: userData._id,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude
+    });
 
     // this._getWeather(location.coords.latitude, location.coords.longitude);
   };
@@ -58,7 +69,7 @@ export default class ParkListScreen extends Component {
                 require('../assets/이촌한강공원.jpg'),
                 require('../assets/반포한강공원.jpg'),
                 require('../assets/qwe.jpg')
-            ]
+              ];
               return (
                 <TouchableOpacity
                   key={list}
@@ -67,10 +78,7 @@ export default class ParkListScreen extends Component {
                     this.goToParkData(data);
                   }}
                 >
-                  <Image
-                    source={imageAddress[list]}
-                    style={styles.image}
-                  />
+                  <Image source={imageAddress[list]} style={styles.image} />
                   <View style={styles.view}>
                     <Text style={styles.ParkContainerText}>{data.name}</Text>
                     <Text style={styles.ParkContainerAdd}>{data.address}</Text>
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
   image: {
     width: 350,
     height: 150,
-    margin: 10,
+    margin: 10
   },
   touchable: {
     alignItems: 'center',

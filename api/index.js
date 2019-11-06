@@ -2,15 +2,29 @@ import * as Facebook from 'expo-facebook';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import getEnvVars from '../environment';
-const { apiUrl, FB_appKey, authConst, weather_API_KEY, air_API_KEY } = getEnvVars();
+const {
+  apiUrl,
+  FB_appKey,
+  authConst,
+  weather_API_KEY,
+  air_API_KEY
+} = getEnvVars();
 
 export const loginWithFacebook = async () => {
-  const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(
-    FB_appKey,
-    {
-      permissions: ['public_profile']
-    }
-  );
+  const {
+    type,
+    token: fbToken,
+      expires,
+      permissions,
+      declinedPermissions,
+  } = await Facebook.logInWithReadPermissionsAsync(FB_appKey, {
+    permissions: ['public_profile'],
+    expires : 24 * 60
+  });
+  console.log(type);
+  console.log(expires);
+  console.log(permissions);
+  console.log(declinedPermissions);
 
   if (type === 'success') {
     const user = await axios
@@ -103,22 +117,39 @@ export const getTempData = async (lat, long) => {
   return data;
 };
 
-//안됨
-export const getImageUrl = async (imageData) => {
+export const getImageUrl = async imageData => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-  return axios.post(
-    `${apiUrl}/park/seats`,
-    imageData,
-    {
+  return axios
+    .post(`${apiUrl}/park/seats/upload`, imageData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'userToken': 'Bearer ' + userToken,
+        userToken: 'Bearer ' + userToken,
         socialId
       }
-    },
-  ).then(res => res.data.imageUrl);
-  //.then(({ data }) => data.imageUrl);
+    })
+    .then(res => res.data.imageUrl);
+};
+
+export const saveExchangeData = async data => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+
+  return axios
+    .post(
+      `${apiUrl}/park/seats`,
+      {
+        data
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+          userToken: 'Bearer ' + userToken,
+          socialId
+        }
+      }
+    )
+    .then(res => res.data);
 };
 
 export const fetchAirData = async () => {
