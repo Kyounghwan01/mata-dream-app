@@ -171,3 +171,16 @@ export const getParkOrderList = async (parkId) => {
   });
   return res.data;
 }
+
+export const deleteOrderList = async (userId, parkId) => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const res = await axios.delete(`${apiUrl}/park/seats/${userId}`,{
+    data : {park : parkId},
+    headers: {
+      userToken: 'Bearer ' + userToken,
+      socialId
+    }
+  });
+  return res.data;
+}

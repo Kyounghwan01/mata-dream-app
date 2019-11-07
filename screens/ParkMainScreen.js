@@ -30,7 +30,7 @@ export default class ParkMainScreen extends Component {
   }
   componentDidMount() {
 
-    this.test();
+    this.getOrderList();
 
 
     //this._getLocationAsync()
@@ -43,7 +43,7 @@ export default class ParkMainScreen extends Component {
     //미세먼지
     //fetchAirData();
   }
-  test = async () => {
+  getOrderList = async () => {
     const list = await getParkOrderList(this.props.screenProps.selectedParkData._id);
     this.props.screenProps.getParkOrderList(list.parkList);
   }

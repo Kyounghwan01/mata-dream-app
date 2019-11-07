@@ -1,6 +1,6 @@
 import React from 'react';
-import { Alert, StyleSheet, ImageBackground } from 'react-native';
-import { Icon, Button, Text, View } from 'native-base';
+import { Alert, StyleSheet, ImageBackground, Text } from 'react-native';
+import { Icon, Button, View } from 'native-base';
 
 import colorConstans from '../constants/Colors';
 
@@ -26,7 +26,7 @@ const LoginScreen = props => {
               style={styles.loginButton}
             >
               <Icon style={styles.Icon} name="logo-facebook" />
-              <Text>Facebook Login</Text>
+              <Text style={styles.facebookdesc}>Facebook Login</Text>
             </Button>
           </View>
         </View>
@@ -63,7 +63,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 200,
     textAlign: 'center'
-  }
+  },
+  facebookdesc : {
+    color : 'white',
+    fontSize : 16,
+    marginRight : 18
+  },
 });
 
 export default LoginScreen;

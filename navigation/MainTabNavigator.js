@@ -15,6 +15,7 @@ import MataDreamNavigator from '../navigation/MataDreamNavigator';
 import { logoutAsync } from '../api';
 
 import TabBarIcon from '../components/TabBarIcon';
+import TabBarMaterial from '../components/TabBarMaterial';
 import colorConstans from '../constants/Colors';
 
 const LogoutHeader = props => {
@@ -88,7 +89,7 @@ MataDreamNavigator.navigationOptions = {
     inactiveTintColor: 'grey',
   },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'ios-list-box'} />
+    <TabBarMaterial focused={focused} name={'place'} />
   )
 };
 
