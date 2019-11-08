@@ -30,6 +30,7 @@ export default class ParkListScreen extends Component {
       // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
     await Permissions.askAsync(Permissions.LOCATION);
     await Permissions.askAsync(Permissions.CAMERA);
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
     const { status, expires } = await Permissions.getAsync(
       Permissions.LOCATION,

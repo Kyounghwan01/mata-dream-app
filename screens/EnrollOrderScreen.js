@@ -20,7 +20,7 @@ export default class EnrollOrderScreen extends Component {
     };
   }
   componentDidMount() {
-    console.log(this.props.screenProps.selectedParkData);
+    //console.log(this.props.screenProps.selectedParkData);
   }
 
   componentDidUpdate() {

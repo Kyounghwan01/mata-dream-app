@@ -11,21 +11,13 @@ const {
 } = getEnvVars();
 
 export const loginWithFacebook = async () => {
-  const {
-    type,
-    token: fbToken,
-      expires,
-      permissions,
-      declinedPermissions,
-  } = await Facebook.logInWithReadPermissionsAsync(FB_appKey, {
-    permissions: ['public_profile'],
-    expires : 24 * 60
-  });
-  console.log(type);
-  console.log(expires);
-  console.log(permissions);
-  console.log(declinedPermissions);
-
+  const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(
+    FB_appKey,
+    {
+      permissions: ['public_profile'],
+      expires: 1
+    }
+  );
   if (type === 'success') {
     const user = await axios
       .get(
@@ -45,7 +37,6 @@ export const loginWithFacebook = async () => {
     //   },
     // }
     const userToken = await getUserToken(user);
-    console.log(userToken);
 
     await SecureStore.setItemAsync(authConst.SOCIAL_ID, user.id);
     await SecureStore.setItemAsync(authConst.FBTOKEN, fbToken);
@@ -111,11 +102,34 @@ export const getUserData = async () => {
   return userData.data.result;
 };
 
+export const getSellerData = async sellerId => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const sellerData = await axios.get(`${apiUrl}/auth/seller/${sellerId}`, {
+    headers: {
+      userToken: 'Bearer ' + userToken,
+      socialId
+    }
+  });
+  return sellerData.data.result;
+};
+
 export const getTempData = async (lat, long) => {
-  const data = await fetch(
+  let tempData = {};
+  await fetch(
     `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${weather_API_KEY}`
-  ).then(res => res.json());
-  return data;
+  )
+    .then(res => res.json())
+    .then(
+      json =>
+        (tempData = {
+          temperature: Math.floor(json.main.temp - 273.15),
+          humidity: json.main.humidity,
+          weatherName: json.weather[0].main,
+          weatherIcon : json.weather[0].icon
+        })
+    );
+  return tempData;
 };
 
 export const getImageUrl = async imageData => {
@@ -160,27 +174,27 @@ export const fetchAirData = async () => {
   //console.log(res);
 };
 
-export const getParkOrderList = async (parkId) => {
+export const getParkOrderList = async parkId => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-  const res = await axios.get(`${apiUrl}/park/seats/${parkId}`,{
+  const res = await axios.get(`${apiUrl}/park/seats/${parkId}`, {
     headers: {
       userToken: 'Bearer ' + userToken,
       socialId
     }
   });
   return res.data;
-}
+};
 
 export const deleteOrderList = async (userId, parkId) => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-  const res = await axios.delete(`${apiUrl}/park/seats/${userId}`,{
-    data : {park : parkId},
+  const res = await axios.delete(`${apiUrl}/park/seats/${userId}`, {
+    data: { park: parkId },
     headers: {
       userToken: 'Bearer ' + userToken,
       socialId
     }
   });
   return res.data;
-}
+};

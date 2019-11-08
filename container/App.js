@@ -2,28 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import AppNavigator from '../navigation/AppNavigator';
-import { PARK_LIST, SELECTED_PARK_DATA, USER_LOCATION_DATA, PARK_ORDER_LIST } from '../constants/ActionTypes';
-
-// import {
-//   COMPLETE_LOADING,
-//   LOADING_RECORD_SCREEN,
-//   COMPLETE_LOADING_RECORD_SCREEN,
-//   START_RECORDING,
-//   END_RECORDING,
-//   INIT_RECORDING,
-//   INIT_STATE
-// } from '../constants/actionType';
+import { PARK_LIST, SELECTED_PARK_DATA, USER_LOCATION_DATA, PARK_ORDER_LIST, ORDER_DATA } from '../constants/ActionTypes';
 
 const mapStateToProps = state => {
-  const { parkList, selectedParkData, userData, parkOrderList } = state;
-  return { parkList, selectedParkData, userData, parkOrderList };
-  //const { isLoadingComplete, recordingStatus, isLoadingRecord } = state;
-
-  // return {
-  //   isLoadingComplete,
-  //   recordingStatus,
-  //   isLoadingRecord
-  // };
+  const { parkList, selectedParkData, userData, parkOrderList, orderData } = state;
+  return { parkList, selectedParkData, userData, parkOrderList, orderData };
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -31,6 +14,7 @@ const mapDispatchToProps = dispatch => ({
   getParkData: data => dispatch({ type: SELECTED_PARK_DATA, data }),
   getUserData : data => dispatch({type : USER_LOCATION_DATA, data}),
   getParkOrderList : data => dispatch({type : PARK_ORDER_LIST, data}),
+  getOrderData : data => dispatch({type : ORDER_DATA, data})
 });
 
 const AppContainer = props => {

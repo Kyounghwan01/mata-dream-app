@@ -1,9 +1,25 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList, Button } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Button
+} from 'react-native';
+import { getSellerData } from '../api';
+import Color from '../constants/Colors';
 
 export default class ChatScreen extends Component {
   constructor(props){
     super(props);
+  }
+  componentDidMount(){
+    getSellerData(this.props.screenProps.orderData.seller).then(res => {
+      this.setState({ seller: res }, function(){console.log(this.state.seller)});
+    });
+    console.log(this.props.screenProps.orderData);
   }
   render() {
     return (

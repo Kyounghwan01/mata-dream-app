@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TouchableOpacity,
-  ActivityIndicator
-} from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { getTempData, fetchAirData, getParkOrderList } from '../api';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
-import colorConstans from '../constants/Colors';
+import Colors from '../constants/Colors';
+import * as Font from 'expo-font';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 /*
 해야 하는거
@@ -25,38 +17,48 @@ export default class ParkMainScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: null
+      location: null,
+      tempData: {}
     };
   }
   componentDidMount() {
-
     this.getOrderList();
-
-
-    //this._getLocationAsync()
     //대기온도
-    // getTempData(
-    //   this.props.screenProps.selectedParkData.location.latitude,
-    //   this.props.screenProps.selectedParkData.location.longitude
-    // ).then(res => console.log(res));
+
+    getTempData(
+      this.props.screenProps.selectedParkData.location.latitude,
+      this.props.screenProps.selectedParkData.location.longitude
+    ).then(res => this.setState({ tempData: res }));
+
     //console.log(this.props.screenProps.selectedParkData);
     //미세먼지
     //fetchAirData();
   }
-  getOrderList = async () => {
-    const list = await getParkOrderList(this.props.screenProps.selectedParkData._id);
-    this.props.screenProps.getParkOrderList(list.parkList);
+
+  componentDidUpdate() {
+    //console.log(this.props.screenProps.parkOrderList);
+    console.log(this.state.tempData);
   }
+
+  getOrderList = async () => {
+    const list = await getParkOrderList(
+      this.props.screenProps.selectedParkData._id
+    );
+    this.props.screenProps.getParkOrderList(list.parkList);
+  };
 
   render() {
     return (
       <View>
-        <Text>강리스트오는자리입니다</Text>
         {this.props.screenProps.userData.latitude ? (
+          //&& this.state.tempData
           <View>
+            <Text>안녕하세요 MATA-DREAM을 이용해 주셔서 감사합니다</Text>
+            <Text>현재 {this.props.screenProps.parkOrderList.length}곳의 자리가 있습니다!</Text>
+            <Text>관심가시는 마커를 클릭하셔서 전경 및 포인트를 확인 해 주세요</Text>
             <MapView
               provider={PROVIDER_GOOGLE}
-              style={{ width: '80%', height: '60%' }}
+              style={{ width: '100%', height: 300 }}
               region={{
                 latitude: this.props.screenProps.selectedParkData.location
                   .latitude,
@@ -71,38 +73,79 @@ export default class ParkMainScreen extends Component {
                   latitude: this.props.screenProps.userData.latitude,
                   longitude: this.props.screenProps.userData.longitude
                 }}
-                description="내 위치"
+                description="현재 위치"
               ></Marker>
-              {this.props.screenProps.selectedParkData ? (
-                <Marker
-                  coordinate={{
-                    latitude: this.props.screenProps.selectedParkData.location
-                      .latitude,
-                    longitude: this.props.screenProps.selectedParkData.location
-                      .longitude
-                  }}
-                  description="한강공원 중심"
-                ></Marker>
-              ) : null}
-
-              {/* <Marker
-              draggable
-              coordinate={this.state.marker}
-              description="이곳은 마커가 오는 자리입니다"
-              onDragEnd={e => console.log(e)}
-            ></Marker>
-            <Marker
-              draggable
-              coordinate={this.state.marker2}
-              description="이곳은 마커가 오는 자리입니다"
-              onDragEnd={e => console.log(e)}
-            ></Marker> */}
+              {this.props.screenProps.parkOrderList
+                ? this.props.screenProps.parkOrderList.map((data, index) => {
+                    return (
+                      <Marker
+                        key={index}
+                        coordinate={{
+                          latitude: Number(data.location.latitude),
+                          longitude: Number(data.location.longitude)
+                        }}
+                      >
+                        <Callout>
+                          <View style={styles.calloutContainer}>
+                            <Image
+                              source={{ uri: data.image_url }}
+                              style={styles.imageStyle}
+                            />
+                            <Text>{data.point}pt</Text>
+                          </View>
+                        </Callout>
+                      </Marker>
+                    );
+                  })
+                : null}
             </MapView>
+            <View>
+              {/* <Text>{this.state.tempData.weatherName}</Text>
+              <Text>{this.state.tempData.humidity}</Text>
+              <Text>{this.state.tempData.temperature}</Text> */}
+              {/* <Image
+          style={{width: 50, height: 50}}
+          source={{uri: `http://openweathermap.org/img/wn/${this.state.tempData.weatherIcon}@2x.png`}}
+        /> */}
+              {/* 온도, 미세먼지 */}
+              <View>
+                <Text>오늘의 날씨는 </Text>
+                <Image
+                style={{ width: 50, height: 50 }}
+                source={{ uri: `http://openweathermap.org/img/wn/01d@2x.png` }}
+              /> 
+              <Text>하고</Text>
+              </View>
+              
+              <View>
+                <MaterialCommunityIcons name="water" size={26} color="dodgerblue" />
+                <Text>31%</Text>
+              </View>
+              <View>
+                <MaterialCommunityIcons
+                  name="temperature-celsius"
+                  size={26}
+                  color="black"
+                />
+                <Text>9℃</Text>
+              </View>
+            </View>
           </View>
         ) : (
-          <ActivityIndicator size="large" color={colorConstans.mainColor} />
+          <ActivityIndicator size="large" color={Colors.mainColor} />
         )}
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  calloutContainer: {
+    display: 'flex',
+    height: 85,
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  imageStyle: { height: 70, width: 70, borderRadius: 5 }
+});

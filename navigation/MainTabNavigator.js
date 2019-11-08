@@ -114,7 +114,7 @@ const MainTabNavigator = createBottomTabNavigator(
     goToParkList
   },
   {
-    initialRouteName: 'ParkMainPageStack'
+    initialRouteName: 'MataDreamNavigator'
   }
 );
 
