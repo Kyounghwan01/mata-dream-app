@@ -4,7 +4,7 @@ import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { getTempData, fetchAirData, getParkOrderList } from '../api';
 import Colors from '../constants/Colors';
 import * as Font from 'expo-font';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 /*
 해야 하는거
@@ -21,119 +21,45 @@ export default class ParkMainScreen extends Component {
       tempData: {}
     };
   }
-  componentDidMount() {
-    this.getOrderList();
-    //대기온도
-
-    getTempData(
-      this.props.screenProps.selectedParkData.location.latitude,
-      this.props.screenProps.selectedParkData.location.longitude
-    ).then(res => this.setState({ tempData: res }));
-
-    //console.log(this.props.screenProps.selectedParkData);
-    //미세먼지
-    //fetchAirData();
-  }
-
-  componentDidUpdate() {
-    //console.log(this.props.screenProps.parkOrderList);
-    console.log(this.state.tempData);
-  }
-
-  getOrderList = async () => {
-    const list = await getParkOrderList(
-      this.props.screenProps.selectedParkData._id
-    );
-    this.props.screenProps.getParkOrderList(list.parkList);
-  };
+  componentDidMount() {}
 
   render() {
     return (
       <View>
-        {this.props.screenProps.userData.latitude ? (
-          //&& this.state.tempData
+        <View>
+          <Text>
+            안녕하세요 MATA-DREAM을 이용해 주셔서 진심으로 감사 드립니다
+          </Text>
+
+          <Text>
+            저희 MATA-DREAM은 한강에 자리 없이 떠도는 사람들을 위해 만든 가상
+            앱입니다.
+          </Text>
           <View>
-            <Text>안녕하세요 MATA-DREAM을 이용해 주셔서 감사합니다</Text>
-            <Text>현재 {this.props.screenProps.parkOrderList.length}곳의 자리가 있습니다!</Text>
-            <Text>관심가시는 마커를 클릭하셔서 전경 및 포인트를 확인 해 주세요</Text>
-            <MapView
-              provider={PROVIDER_GOOGLE}
-              style={{ width: '100%', height: 300 }}
-              region={{
-                latitude: this.props.screenProps.selectedParkData.location
-                  .latitude,
-                longitude: this.props.screenProps.selectedParkData.location
-                  .longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              }}
-            >
-              <Marker
-                coordinate={{
-                  latitude: this.props.screenProps.userData.latitude,
-                  longitude: this.props.screenProps.userData.longitude
-                }}
-                description="현재 위치"
-              ></Marker>
-              {this.props.screenProps.parkOrderList
-                ? this.props.screenProps.parkOrderList.map((data, index) => {
-                    return (
-                      <Marker
-                        key={index}
-                        coordinate={{
-                          latitude: Number(data.location.latitude),
-                          longitude: Number(data.location.longitude)
-                        }}
-                      >
-                        <Callout>
-                          <View style={styles.calloutContainer}>
-                            <Image
-                              source={{ uri: data.image_url }}
-                              style={styles.imageStyle}
-                            />
-                            <Text>{data.point}pt</Text>
-                          </View>
-                        </Callout>
-                      </Marker>
-                    );
-                  })
-                : null}
-            </MapView>
+            <Text>이용법</Text>
             <View>
-              {/* <Text>{this.state.tempData.weatherName}</Text>
-              <Text>{this.state.tempData.humidity}</Text>
-              <Text>{this.state.tempData.temperature}</Text> */}
-              {/* <Image
-          style={{width: 50, height: 50}}
-          source={{uri: `http://openweathermap.org/img/wn/${this.state.tempData.weatherIcon}@2x.png`}}
-        /> */}
-              {/* 온도, 미세먼지 */}
-              <View>
-                <Text>오늘의 날씨는 </Text>
-                <Image
-                style={{ width: 50, height: 50 }}
-                source={{ uri: `http://openweathermap.org/img/wn/01d@2x.png` }}
-              /> 
-              <Text>하고</Text>
-              </View>
-              
-              <View>
-                <MaterialCommunityIcons name="water" size={26} color="dodgerblue" />
-                <Text>31%</Text>
-              </View>
-              <View>
-                <MaterialCommunityIcons
-                  name="temperature-celsius"
-                  size={26}
-                  color="black"
-                />
-                <Text>9℃</Text>
-              </View>
+              <Text>1.자리를 등록 하시고 판매를 원하시는 분들은 mataDream 페이지의 오른쪽 하단 등록버튼(+)을 클릭하시면 됩니다.
+                중복 판매 방지를 위해 한번 등록하시면 위
+                아이콘은 없어지고 삭제 버튼(-)으로 바뀝니다.
+              </Text>
+              <Text>1-1. 등록버튼 클릭시 마커를 클릭하시고 현재 위치를 지정하시고, 현재 보이시는 뷰를 사진으로 찍어 등록하신 후, 포인트를 지정하시면 됩니다.</Text>
+              <Text>1-2. 삭제 버튼(-)을 클릭하시면 등록하신 내역은 사라지고 자동으로 등록 버튼(+)으로 바뀝니다.</Text>
+            </View>
+            <View>
+              <Text>2. 이용을 원하시는 분은 지도, 사진을 통해 위치를 확인하시고 대화하기 버튼을 클릭하셔서 판매자와 거래를 이어가시면됩니다</Text>
+            </View>
+            <View>
+              <Text>3. 거래를 확정하시려면 채팅 방 오른쪽 상단에 거래하기 버튼을 판매자, 구매자 모두 클릭하시면 포인트가 이동하고, 거래 방 및 주문 리스트는 자동으로 삭제됩니다.</Text>
+              <Text>3-1. 거래 도중 다른 판매자와 거래 하실 수 없습니다. 거래를 변경하시려면 나가기 버튼을 누르시면 자동으로 현재 거래가 취소됩니다.</Text>
+            </View>
+            <View>
+              <Text>4. 포인트 소진으로 충전을 원하시면 mataDream 페이지의 왼쪽 상단부의 마이페이지 아이콘을 클릭하시고 충전하기 버튼을 클릭하시면 1000포인트 충전됩니다.</Text>
+            </View>
+            <View>
+              <Text>저희 MATA-DREAM과 즐거운 시간 보내시길 바라겠습니다!!</Text>
             </View>
           </View>
-        ) : (
-          <ActivityIndicator size="large" color={Colors.mainColor} />
-        )}
+        </View>
       </View>
     );
   }
@@ -147,5 +73,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  imageStyle: { height: 70, width: 70, borderRadius: 5 }
+  imageStyle: { height: 70, width: 70, borderRadius: 5 },
+  image: {
+    color: Colors.mainColor
+  }
 });

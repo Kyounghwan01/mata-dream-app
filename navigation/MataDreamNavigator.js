@@ -32,7 +32,7 @@ const orderList = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: 'Order-List',
+        title: `${props.screenProps.selectedParkData.name}`,
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor

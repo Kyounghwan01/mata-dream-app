@@ -42,55 +42,50 @@ export default class OrderListScreen extends Component {
   render() {
     let checkEnrollUser = false;
     return (
-      <View
-        style={{ flex: 1, backgroundColor: 'whitesmoke' }}
-      >
-         <MapView
-            provider={PROVIDER_GOOGLE}
-            style={{ width: '100%', height: 300,  }}
-            region={{
-              latitude: this.props.screenProps.selectedParkData.location
-                .latitude,
-              longitude: this.props.screenProps.selectedParkData.location
-                .longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01
+      <View style={{ flex: 1, backgroundColor: 'whitesmoke' }}>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={{ width: '100%', height: 300 }}
+          region={{
+            latitude: this.props.screenProps.selectedParkData.location.latitude,
+            longitude: this.props.screenProps.selectedParkData.location
+              .longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+          }}
+        >
+          <Marker
+            coordinate={{
+              latitude: this.props.screenProps.userData.latitude,
+              longitude: this.props.screenProps.userData.longitude
             }}
-          >
-            <Marker
-              coordinate={{
-                latitude: this.props.screenProps.userData.latitude,
-                longitude: this.props.screenProps.userData.longitude
-              }}
-              description="현재 위치"
-            ></Marker>
-            {this.props.screenProps.parkOrderList
-              ? this.props.screenProps.parkOrderList.map((data, index) => {
-                console.log(data.image_url);
-                  return (
-                    <Marker
-                      key={index}
-                      coordinate={{
-                        latitude: Number(data.location.latitude),
-                        longitude: Number(data.location.longitude)
-                      }}
-                    >
-                      <Callout>
-                        <View style={styles.calloutContainer}>
-                          <Image
-                            source={{ uri: data.image_url }}
-                            style={styles.imageStyle}
-                          />
-                          <Text>{data.point}pt</Text>
-                        </View>
-                      </Callout>
-                    </Marker>
-                  );
-                })
-              : null}
-          </MapView>
+            description="현재 위치"
+          ></Marker>
+          {this.props.screenProps.parkOrderList
+            ? this.props.screenProps.parkOrderList.map((data, index) => {
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: Number(data.location.latitude),
+                      longitude: Number(data.location.longitude)
+                    }}
+                  >
+                    <Callout>
+                      <View style={styles.calloutContainer}>
+                        <Image
+                          source={{ uri: data.image_url }}
+                          style={styles.imageStyle}
+                        />
+                        <Text>{data.point}pt</Text>
+                      </View>
+                    </Callout>
+                  </Marker>
+                );
+              })
+            : null}
+        </MapView>
         <ScrollView>
-          <View style={{}}>
           {this.props.screenProps.parkOrderList.map((data, index) => {
             if (data.seller === this.props.screenProps.userData.id) {
               checkEnrollUser = true;
@@ -139,14 +134,13 @@ export default class OrderListScreen extends Component {
                       style={styles.detailBtn}
                       onPress={() => this.goToDetailPage(data)}
                     >
-                      <Text style={styles.pointDesc}>상세보기</Text>
+                      <Text style={styles.pointDesc}>대화하기</Text>
                     </Button>
                   </View>
                 </View>
               </View>
             );
           })}
-          </View>
         </ScrollView>
         {checkEnrollUser ? (
           <AntDesign
@@ -169,17 +163,6 @@ export default class OrderListScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-
-  scrollViewStyle: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingTop: 60
-},
-
-
   calloutContainer: {
     display: 'flex',
     height: 85,

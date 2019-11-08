@@ -33,7 +33,7 @@ const ParkMainPageStack = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: `${props.screenProps.selectedParkData.name}`,
+        title: '도움말',
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
@@ -45,13 +45,13 @@ const ParkMainPageStack = createStackNavigator({
 
 //밑에오는 이모티콘 및 설명
 ParkMainPageStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: '도움말',
   tabBarOptions: {
     activeTintColor: colorConstans.mainColor,
     inactiveTintColor: 'grey',
   },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name="md-home" />
+    <TabBarIcon focused={focused} name="ios-help-circle-outline" />
   )
 };
 
