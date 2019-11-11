@@ -1,51 +1,98 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, Alert } from 'react-native';
 import { Button } from 'native-base';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
-import { getParkOrderList, deleteOrderList, getSellerData } from '../api';
+import { getParkOrder, deleteOrderList, getSellerData } from '../api';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import io from 'socket.io-client';
+import getEnvVars from '../environment';
+const { apiUrl } = getEnvVars();
+import { changeExchangeStatus } from '../api';
 
 export default class OrderListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      seller: false
+      socket: io.connect(apiUrl),
+      isTrading: [{ orderId: null, trading: false }]
     };
   }
+
   componentDidMount() {
+    // this.state.socket.on('ENTER_SOMEONE', msg => {
+    //   //현재 접속된 사람을 위해
+    //   console.log('되니', msg);
+    //   //changeExchangeStatus
+    // });
+
     this.getOrderList();
-    //console.log(this.props.screenProps.parkOrderList);
     // console.log(this.props.screenProps.userData.id);
     //console.log(getParkOrderList(this.props.screenProps.selectedParkData._id));
   }
+
+  componentDidUpdate() {
+    // console.log(this.props.screenProps.parkOrderList);
+  }
   getOrderList = async () => {
-    const list = await getParkOrderList(
+    const list = await getParkOrder(
       this.props.screenProps.selectedParkData._id
     );
+    //파크 리스트 정보
     this.props.screenProps.getParkOrderList(list.parkList);
   };
 
   deleteOrder = async () => {
-    await deleteOrderList(
-      this.props.screenProps.userData.id,
-      this.props.screenProps.selectedParkData._id
-    ).then(this.getOrderList());
+    Alert.alert(
+      '매물 삭제',
+      '등록하신 매물을 삭제하겠습니까?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
+            await deleteOrderList(
+              this.props.screenProps.userData.id,
+              this.props.screenProps.selectedParkData._id
+            )
+              .then(Alert.alert('삭제되었습니다'))
+              .then(this.props.navigation.navigate('ParkList'));
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   goToDetailPage = async data => {
-    data['parkname'] = 'nkh';
+    // data['parkname'] = 'nkh';
+    this.state.socket.emit('PREVENT_ENTER', {
+      status: 'trading',
+      dataId: data._id
+    });
+    //디비에 전송
+    changeExchangeStatus('trading', data._id);
     this.props.screenProps.getOrderData(data);
     this.props.navigation.navigate('ChatScreen');
   };
 
   render() {
+    let isSeller = false;
     let checkEnrollUser = false;
+    this.props.screenProps.parkOrderList.map(data => {
+      if (data.seller === this.props.screenProps.userData.id) {
+        isSeller = this.props.screenProps.userData.id;
+      }
+    });
     return (
       <View style={{ flex: 1, backgroundColor: 'whitesmoke' }}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          style={{ width: '100%', height: 300 }}
+          style={{ width: '100%', height: 260 }}
           region={{
             latitude: this.props.screenProps.selectedParkData.location.latitude,
             longitude: this.props.screenProps.selectedParkData.location
@@ -87,8 +134,12 @@ export default class OrderListScreen extends Component {
         </MapView>
         <ScrollView>
           {this.props.screenProps.parkOrderList.map((data, index) => {
+            let myOrder = false;
             if (data.seller === this.props.screenProps.userData.id) {
               checkEnrollUser = true;
+              myOrder = true;
+            } else {
+              myOrder = false;
             }
             return (
               <View key={index}>
@@ -100,8 +151,8 @@ export default class OrderListScreen extends Component {
                       region={{
                         latitude: Number(data.location.latitude),
                         longitude: Number(data.location.longitude),
-                        latitudeDelta: 0.005,
-                        longitudeDelta: 0.005
+                        latitudeDelta: 0.001,
+                        longitudeDelta: 0.001
                       }}
                     >
                       <Marker
@@ -121,21 +172,45 @@ export default class OrderListScreen extends Component {
                     <View style={styles.point}>
                       <Text style={styles.pointDesc}>{data.point}pt</Text>
                     </View>
-                    {data.complete === false ? (
-                      <View style={styles.exchange}>
-                        <Text style={styles.pointDesc}>거래 가능</Text>
-                      </View>
+                    {data.complete === 'false' ? (
+                      <>
+                        <View style={styles.exchange}>
+                          <Text style={styles.pointDesc}>거래 가능</Text>
+                        </View>
+                        {isSeller ? (
+                          <>
+                            {myOrder ? (
+                              <Button
+                                style={styles.messageBtn}
+                                onPress={() => this.goToDetailPage(data)}
+                              >
+                                <Text style={styles.pointDesc}>대화하기</Text>
+                              </Button>
+                            ) : (
+                              <Button style={styles.detailBtn}>
+                                <Text style={styles.pointDesc}>대화불가</Text>
+                              </Button>
+                            )}
+                          </>
+                        ) : (
+                          <Button
+                            style={styles.messageBtn}
+                            onPress={() => this.goToDetailPage(data)}
+                          >
+                            <Text style={styles.pointDesc}>대화하기</Text>
+                          </Button>
+                        )}
+                      </>
                     ) : (
-                      <View>
-                        <Text>거래중</Text>
-                      </View>
+                      <>
+                        <View style={styles.nonexchange}>
+                          <Text style={styles.pointDesc}>거래 중</Text>
+                        </View>
+                        <Button style={styles.detailBtn}>
+                          <Text style={styles.pointDesc}>대화불가</Text>
+                        </Button>
+                      </>
                     )}
-                    <Button
-                      style={styles.detailBtn}
-                      onPress={() => this.goToDetailPage(data)}
-                    >
-                      <Text style={styles.pointDesc}>대화하기</Text>
-                    </Button>
                   </View>
                 </View>
               </View>
@@ -170,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  imageStyle: { height: 70, width: 70, borderRadius: 5 },
+  imageStyle: { height: 60, width: 70, borderRadius: 5 },
   image: {
     height: 50,
     position: 'absolute',
@@ -190,17 +265,17 @@ const styles = StyleSheet.create({
   mapstyle: {
     display: 'flex',
     flexDirection: 'row',
-    height: 130,
+    height: 125,
     justifyContent: 'center',
     margin: 10
   },
   realMapStyle: {
-    width: 185,
-    height: 130
+    width: '50%',
+    height: 120
   },
   mapViewStyle: {
-    width: 185,
-    height: 130
+    width: '50%',
+    height: 120
   },
   orderListDesc: {
     display: 'flex',
@@ -230,8 +305,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10
   },
+  nonexchange: {
+    backgroundColor: 'darkgrey',
+    width: '30%',
+    alignItems: 'center',
+    height: 30,
+    justifyContent: 'center',
+    marginRight: 10
+  },
+  messageBtn: {
+    backgroundColor: 'rgb(229,156,61)',
+    width: '30%',
+    alignItems: 'center',
+    height: 30,
+    justifyContent: 'center',
+    borderRadius: 0
+  },
   detailBtn: {
-    backgroundColor: 'grey',
+    backgroundColor: 'rgb(143,120,76)',
     width: '30%',
     alignItems: 'center',
     height: 30,

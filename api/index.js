@@ -114,24 +114,6 @@ export const getSellerData = async sellerId => {
   return sellerData.data.result;
 };
 
-export const getTempData = async (lat, long) => {
-  let tempData = {};
-  await fetch(
-    `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&APPID=${weather_API_KEY}`
-  )
-    .then(res => res.json())
-    .then(
-      json =>
-        (tempData = {
-          temperature: Math.floor(json.main.temp - 273.15),
-          humidity: json.main.humidity,
-          weatherName: json.weather[0].main,
-          weatherIcon : json.weather[0].icon
-        })
-    );
-  return tempData;
-};
-
 export const getImageUrl = async imageData => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
@@ -167,14 +149,7 @@ export const saveExchangeData = async data => {
     .then(res => res.data);
 };
 
-export const fetchAirData = async () => {
-  const res = await axios(
-    `http://openapi.seoul.go.kr:8088/${air_API_KEY}/json/RealtimeCityAir/1/5/%EB%8F%99%EB%B6%81%EA%B6%8C/%EC%84%B1%EB%B6%81%EA%B5%AC`
-  );
-  //console.log(res);
-};
-
-export const getParkOrderList = async parkId => {
+export const getParkOrder = async parkId => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
   const res = await axios.get(`${apiUrl}/park/seats/${parkId}`, {
@@ -198,3 +173,42 @@ export const deleteOrderList = async (userId, parkId) => {
   });
   return res.data;
 };
+
+export const changeExchangeStatus = async (status, orderId) => {
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+  const res = await axios.post(
+    `${apiUrl}/park/seats/${orderId}`,
+    {
+      status
+    },
+    {
+      headers: {
+        'content-type': 'application/json',
+        userToken: 'Bearer ' + userToken,
+        socialId
+      }
+    }
+  );
+};
+
+// export const saveExchangeData = async data => {
+//   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+//   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+
+//   return axios
+//     .post(
+//       `${apiUrl}/park/seats`,
+//       {
+//         data
+//       },
+//       {
+//         headers: {
+//           'content-type': 'application/json',
+//           userToken: 'Bearer ' + userToken,
+//           socialId
+//         }
+//       }
+//     )
+//     .then(res => res.data);
+// };

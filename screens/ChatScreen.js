@@ -12,7 +12,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from 'react-native';
 import { getSellerData } from '../api';
 import io from 'socket.io-client';
@@ -36,11 +37,10 @@ export default class ChatScreen extends Component {
   }
   async componentDidMount() {
     //didfoucus 함수
-
+    console.log(this.props.screenProps.userData.id);
     await getSellerData(this.props.screenProps.orderData.seller).then(res => {
       this.setState({ seller: res });
     });
-    console.log(this.props.screenProps);
     this.connectSocket();
   }
   componentWillUnmount() {
@@ -48,19 +48,41 @@ export default class ChatScreen extends Component {
   }
 
   connectSocket = () => {
-    console.log('qweqwe', this.state.seller._id);
     if (this.state.seller._id) {
-      this.state.socket.emit('JOIN', { roomId: this.state.seller._id });
+      this.state.socket.emit('JOIN', { roomId: this.props.screenProps.orderData._id });
       //받기
       this.state.socket.on('receiveMessage', msg => {
         this.setState({ chatMessages: [...this.state.chatMessages, msg] });
       });
+      this.state.socket.on('receiveAlert', userId => {
+        Alert.alert(
+          '교환 하시겠습니까?',
+          '포인트는 얼마',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel'
+            },
+            {
+              text: 'OK',
+              onPress: async () => {
+                console.log(this.props.screenProps.acceptArray);
+                await this.props.screenProps.getAcceptArray(this.props.screenProps.userData.id);
+                console.log(this.props.screenProps.acceptArray);
+                console.log('교환 성공')
+              }
+            }
+          ],
+          { cancelable: false }
+        );
+      })
     }
   };
 
   submitChatMessage() {
     //보내기
-    this.state.socket.emit('sendMessage', {message : this.state.chatMessage, roomId : this.state.seller._id});
+    this.state.socket.emit('sendMessage', {message : this.state.chatMessage, roomId : this.props.screenProps.orderData._id});
     this.setState({ chatMessage: '' });
   }
 

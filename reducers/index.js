@@ -3,7 +3,8 @@ import {
   SELECTED_PARK_DATA,
   USER_LOCATION_DATA,
   PARK_ORDER_LIST,
-  ORDER_DATA
+  ORDER_DATA,
+  ACCEPT_ARRAY
 } from '../constants/ActionTypes';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   userData: {},
   parkOrderList : [],
   orderData : {},
+  acceptArray : [],
 };
 
 export default reducer = (state = initialState, action) => {
@@ -26,6 +28,9 @@ export default reducer = (state = initialState, action) => {
       return Object.assign({ ...state }, { parkOrderList: action.data });
     case ORDER_DATA:
       return Object.assign({ ...state }, { orderData: action.data });
+    case ACCEPT_ARRAY:
+      console.log(action);
+      return Object.assign({ ...state }, { acceptArray: action.data });
     default:
       return state;
   }

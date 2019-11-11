@@ -17,6 +17,15 @@ export const reciveMessage = msg => {
   return msg
 }
 
+export const sendAlert = () => {
+
+}
+
+export const reciveAlert = () => {
+  
+}
+
+
 
 export const example = () =>{
   const socket = io.connect(apiUrl);

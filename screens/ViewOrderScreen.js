@@ -25,7 +25,7 @@ export default class ViewOrderScreen extends Component {
     getSellerData(this.props.screenProps.orderData.seller).then(res => {
       this.setState({ seller: res });
     });
-    console.log(this.props.screenProps.orderData);
+    // console.log(this.props.screenProps.orderData);
   }
   render() {
     return (
