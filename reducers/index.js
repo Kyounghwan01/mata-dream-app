@@ -11,7 +11,7 @@ const initialState = {
   selectedParkData: {},
   userData: {},
   parkOrderList : [],
-  orderData : {}
+  orderData : {},
 };
 
 export default reducer = (state = initialState, action) => {
