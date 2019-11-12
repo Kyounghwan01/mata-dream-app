@@ -192,6 +192,26 @@ export const changeExchangeStatus = async (status, orderId) => {
   );
 };
 
+export const changePoint = async (exchangeData) => {
+  console.log(exchangeData);
+  const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
+
+  const res = await axios.post(
+    `${apiUrl}/park/seats/point`,
+    {
+      exchangeData
+    },
+    {
+      headers: {
+        'content-type': 'application/json',
+        userToken: 'Bearer ' + userToken,
+        socialId
+      }
+    }
+  );
+};
+
 // export const saveExchangeData = async data => {
 //   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
 //   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);

@@ -15,7 +15,7 @@ import ChatScreen from '../screens/ChatScreen';
 import colorConstans from '../constants/Colors';
 
 import loginLoadingScreen from '../screens/loginLoadingScreen';
-import { loginWithFacebook, logoutAsync, changeExchangeStatus } from '../api';
+import { loginWithFacebook, logoutAsync, changeExchangeStatus, deleteOrderList } from '../api';
 
 import ParkListScreen from '../screens/ParkListScreen';
 
@@ -85,6 +85,7 @@ const ChatNavigator = createStackNavigator({
         headerRight: (
           <AcceptButton
             exchange={() => {
+              console.log(props.screenProps.userData);
               socket.emit('sendAlert', {
                 userId: props.screenProps.userData.id,
                 roomId: props.screenProps.orderData._id
@@ -102,6 +103,11 @@ const ChatNavigator = createStackNavigator({
         headerLeft: (
           <BackButton
             goBackButtonClick={async () => {
+              if(props.screenProps.orderData.seller === props.screenProps.userData.id){
+                //방만든사람이랑 지금 아이디가 같으면 나갈때 방 파괴한다
+                deleteOrderList(props.screenProps.userData.id, props.screenProps.selectedParkData._id);
+              }
+
               socket.emit('LEAVE', { roomId: props.screenProps.orderData._id });
               await changeExchangeStatus(
                 'false',

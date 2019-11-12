@@ -43,12 +43,21 @@ export default class ParkListScreen extends Component {
 
     let location = await Location.getCurrentPositionAsync({});
 
-    this.props.screenProps.getUserData({
+    if(!location){
+      this.props.screenProps.getUserData({
       name: userData.name,
       id: userData._id,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude
+      latitude: 37.5055751,
+      longitude: 127.057275
     });
+    } else {
+      this.props.screenProps.getUserData({
+        name: userData.name,
+        id: userData._id,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      });
+    }
 
     // this._getWeather(location.coords.latitude, location.coords.longitude);
   };

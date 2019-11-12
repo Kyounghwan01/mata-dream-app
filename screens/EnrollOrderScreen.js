@@ -94,7 +94,9 @@ export default class EnrollOrderScreen extends Component {
       const savedImageData = await saveExchangeData(data);
       if (savedImageData) {
         Alert.alert('등록 성공하였습니다!');
-        this.props.navigation.navigate('List');
+        //this.props.navigation.navigate('List');
+        await this.props.screenProps.getOrderData(savedImageData.newData);
+        this.props.navigation.navigate('ChatScreen');
       }
     } catch (error) {
       Alert.alert(

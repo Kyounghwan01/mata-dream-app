@@ -15,7 +15,6 @@ export default class OrderListScreen extends Component {
     super(props);
     this.state = {
       socket: io.connect(apiUrl),
-      isTrading: [{ orderId: null, trading: false }]
     };
   }
 
@@ -69,7 +68,6 @@ export default class OrderListScreen extends Component {
   };
 
   goToDetailPage = async data => {
-    // data['parkname'] = 'nkh';
     this.state.socket.emit('PREVENT_ENTER', {
       status: 'trading',
       dataId: data._id

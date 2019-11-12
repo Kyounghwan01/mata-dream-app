@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
@@ -8,108 +8,121 @@ import {
   Platform,
   SafeAreaView,
   Alert
-} from 'react-native';
-import io from 'socket.io-client';
-import { getSellerData, changeExchangeStatus } from '../api';
-import Color from '../constants/Colors';
-import getEnvVars from '../environment';
+} from "react-native";
+import io from "socket.io-client";
+import {
+  getSellerData,
+  changeExchangeStatus,
+  changePoint,
+  deleteOrderList
+} from "../api";
+import Color from "../constants/Colors";
+import getEnvVars from "../environment";
 const { apiUrl } = getEnvVars();
 
 YellowBox.ignoreWarnings([
-  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+  "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
 ]);
 
 export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatMessage: '',
+      chatMessage: "",
       chatMessages: [],
-      socket: io.connect(apiUrl),
-      exchangeState: true
+      socket: io.connect(apiUrl)
     };
   }
   async componentDidMount() {
     await getSellerData(this.props.screenProps.orderData.seller).then(res => {
       this.setState({ seller: res });
     });
-    // this.focusListener = this.props.navigation.addListener('didFocus', () => {
-    //   console.log("qweqwe");
-    //   this.connectSocket();
-    // });
-    // this.focusListener();
     this.connectSocket();
-    //함수?
-    //대화불러오는 작업
-    //룸 들어오는 작업
 
-    this.blurListener = this.props.navigation.addListener('didBlur', () => {
-      this.state.socket.emit('LEAVE', {
+    this.blurListener = this.props.navigation.addListener("didBlur", () => {
+      this.state.socket.emit("LEAVE", {
         roomId: this.props.screenProps.orderData._id
       });
     });
   }
 
   componentWillUnmount() {
-    // this.focusListener.remove();
     this.blurListener.remove();
     this.state.socket.disconnect();
   }
 
   connectSocket = () => {
-    if (this.state.seller._id && this.state.exchangeState) {
-      this.state.socket.emit('JOIN', {
-        roomId: this.props.screenProps.orderData._id
+    const { socket } = this.state;
+    const { screenProps } = this.props;
+    if (this.state.seller._id) {
+      socket.emit("JOIN", {
+        roomId: screenProps.orderData._id
       });
       //받기
-      this.state.socket.on('receiveMessage', msg => {
+      socket.on("receiveMessage", msg => {
         this.setState({ chatMessages: [...this.state.chatMessages, msg] });
       });
-      this.state.socket.on('receiveAccept', async userId => {
-        await this.props.screenProps.getAcceptArray(userId);
-        //상대방을 받았어
-        //length 2면 교환 시작
-        console.log(this.props.screenProps.acceptArray);
+      socket.on("receiveAccept", async userId => {
+        await screenProps.getAcceptArray(userId);
+        if (screenProps.acceptArray.length === 2) {
+          console.log("seller", screenProps.orderData.seller);
+          const buyer = screenProps.acceptArray.filter(
+            id => id !== screenProps.orderData.seller
+          );
+          console.log("buyer", buyer);
+
+          exchangeData = {
+            seller: screenProps.orderData.seller,
+            buyer: buyer[0],
+            point: Number(screenProps.orderData.point),
+            park: screenProps.orderData.park
+          };
+          changeExchangeStatus("true", screenProps.orderData._id);
+          await changePoint(exchangeData);
+          deleteOrderList(
+            screenProps.orderData.seller,
+            screenProps.orderData.park
+          ).then(this.props.navigation.navigate("List"));
+          Alert.alert("교환 성공");
+        }
       });
-      this.state.socket.on('receiveAlert', userId => {
-        this.setState({ exchangeState: false });
+      socket.on("CANCEL_EVENT", () => {
+        screenProps.resetAcceptArray();
+        Alert.alert("상대방이 교환 거부하셨습니다.");
+      });
+      socket.on("receiveAlert", () => {
         Alert.alert(
-          '교환 하시겠습니까?',
-          `포인트는 ${this.props.screenProps.orderData.point}pt 입니다.`,
+          "교환 하시겠습니까?",
+          `포인트는 ${screenProps.orderData.point}pt 입니다.`,
           [
             {
-              text: '취소 및 나가기',
+              text: "취소",
               onPress: async () => {
-                this.state.socket.emit('LEAVE', {
-                  roomId: this.props.screenProps.orderData._id
-                });
-                //소켓 삭제 방 나가기
-                await this.props.screenProps.resetAcceptArray();
-                await changeExchangeStatus(
-                  'false',
-                  this.props.screenProps.orderData._id
-                );
-                this.props.navigation.navigate('List');
+                socket.emit("CANCEL", { roomId: screenProps.orderData._id });
+                screenProps.resetAcceptArray();
               },
-              style: 'cancel'
+              style: "cancel"
             },
             {
-              text: 'OK',
+              text: "OK",
               onPress: async () => {
-                console.log(this.props.screenProps.userData.id);
-                this.state.socket.emit('sendAccept', {
-                  userId: this.props.screenProps.userData.id,
-                  roomId: this.props.screenProps.orderData._id
+                console.log(screenProps.userData.id);
+                console.log(screenProps.acceptArray);
+                socket.emit("sendAccept", {
+                  userId: screenProps.userData.id,
+                  roomId: screenProps.orderData._id
                 });
-                await this.props.screenProps.getAcceptArray(
-                  this.props.screenProps.userData.id
-                );
-                if (this.props.screenProps.acceptArray.length === 2) {
-                  Alert.alert('교환 성공');
+                await screenProps.getAcceptArray(screenProps.userData.id);
+                console.log(screenProps.acceptArray);
+                if (screenProps.acceptArray.length === 2) {
+                  deleteOrderList(
+                    screenProps.orderData.seller,
+                    screenProps.orderData.park
+                  ).then(this.props.navigation.navigate("List"));
+                  Alert.alert("교환 성공");
                 } else {
-                  Alert.alert('상대방 수락 여부 대기');
+                  this.setState({ chatMessages: [...this.state.chatMessages, '상대방 수락 여부 대기중 입니다...'] });
                 }
-                // console.log(this.props.screenProps.acceptArray);
               }
             }
           ],
@@ -119,14 +132,14 @@ export default class ChatScreen extends Component {
     }
   };
 
-  submitChatMessage() {
+  submitChatMessage = () => {
     //보내기
-    this.state.socket.emit('sendMessage', {
+    this.state.socket.emit("sendMessage", {
       message: this.state.chatMessage,
       roomId: this.props.screenProps.orderData._id
     });
-    this.setState({ chatMessage: '' });
-  }
+    this.setState({ chatMessage: "" });
+  };
 
   render() {
     const chatMessages = this.state.chatMessages.map((chatMessage, index) => (
@@ -136,7 +149,7 @@ export default class ChatScreen extends Component {
     return (
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         enabled
       >
         <SafeAreaView style={styles.container} style={{ flex: 1 }}>
@@ -144,9 +157,9 @@ export default class ChatScreen extends Component {
             style={{
               height: 40,
               borderWidth: 2,
-              position: 'absolute',
+              position: "absolute",
               bottom: 100,
-              width: '100%'
+              width: "100%"
             }}
             autoCorrect={false}
             value={this.state.chatMessage}
@@ -165,17 +178,6 @@ export default class ChatScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF'
+    backgroundColor: "#F5FCFF"
   }
 });
-
-// render() {
-//   return (
-//     <View>
-//       <Text>ChatScreen</Text>
-//       <Button title="View 버튼" onPress={()=>this.props.navigation.navigate('View')}/>
-//       <Button title="리스트 버튼" onPress={()=>this.props.navigation.navigate('List')}/>
-//     </View>
-//   )
-// }
-//}

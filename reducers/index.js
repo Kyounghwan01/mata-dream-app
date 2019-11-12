@@ -33,8 +33,7 @@ export default reducer = (state = initialState, action) => {
        state.acceptArray.push(action.data);
       return {...state}
     case ACCEPT_ARRAY_RESET:
-      state.acceptArray = [];
-      return {...state}
+      return state.acceptArray
     default:
       return state;
   }
