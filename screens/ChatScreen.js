@@ -7,7 +7,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  Alert
+  Alert,
+  View,
+  ScrollView
 } from "react-native";
 import io from "socket.io-client";
 import {
@@ -29,7 +31,7 @@ export default class ChatScreen extends Component {
     super(props);
     this.state = {
       chatMessage: "",
-      chatMessages: [],
+      chatMessages: [{ user: null, message: null }],
       socket: io.connect(apiUrl)
     };
   }
@@ -60,17 +62,19 @@ export default class ChatScreen extends Component {
       });
       //받기
       socket.on("receiveMessage", msg => {
-        this.setState({ chatMessages: [...this.state.chatMessages, msg] });
+        this.setState({
+          chatMessages: [
+            ...this.state.chatMessages,
+            { user: msg[1], message: msg[0] }
+          ]
+        });
       });
       socket.on("receiveAccept", async userId => {
         await screenProps.getAcceptArray(userId);
         if (screenProps.acceptArray.length === 2) {
-          console.log("seller", screenProps.orderData.seller);
           const buyer = screenProps.acceptArray.filter(
             id => id !== screenProps.orderData.seller
           );
-          console.log("buyer", buyer);
-
           exchangeData = {
             seller: screenProps.orderData.seller,
             buyer: buyer[0],
@@ -121,7 +125,12 @@ export default class ChatScreen extends Component {
                   ).then(this.props.navigation.navigate("List"));
                   Alert.alert("교환 성공");
                 } else {
-                  this.setState({ chatMessages: [...this.state.chatMessages, '상대방 수락 여부 대기중 입니다...'] });
+                  this.setState({
+                    chatMessages: [
+                      ...this.state.chatMessages,
+                      "상대방 수락 여부 대기중 입니다..."
+                    ]
+                  });
                 }
               }
             }
@@ -133,32 +142,50 @@ export default class ChatScreen extends Component {
   };
 
   submitChatMessage = () => {
-    //보내기
     this.state.socket.emit("sendMessage", {
       message: this.state.chatMessage,
-      roomId: this.props.screenProps.orderData._id
+      roomId: this.props.screenProps.orderData._id,
+      userId: this.props.screenProps.userData.id
     });
     this.setState({ chatMessage: "" });
   };
 
   render() {
     const chatMessages = this.state.chatMessages.map((chatMessage, index) => (
-      <Text key={index}>{chatMessage}</Text>
+      <>
+        {chatMessage.user === this.props.screenProps.userData.id ? (
+          <View style={styles.myChatConatiner} key={index}>
+            <View style={styles.myChat}>
+              <Text style={styles.myChatDesc}>{chatMessage.message}</Text>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.yourConatiner} key={index}>
+            <View style={styles.yourChat}>
+              <Text style={styles.yourChatDesc}>{chatMessage.message}</Text>
+            </View>
+          </View>
+        )}
+      </>
     ));
 
     return (
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : null}
+        behavior="padding"
         enabled
+        keyboardVerticalOffset={80}
       >
-        <SafeAreaView style={styles.container} style={{ flex: 1 }}>
+        <SafeAreaView>
+          <ScrollView style={{height : '95%'}}>
+          {chatMessages}
+          </ScrollView>
           <TextInput
             style={{
               height: 40,
-              borderWidth: 2,
-              position: "absolute",
-              bottom: 100,
+              borderWidth: 1,
+              // position: "absolute",
+              bottom: 0,
               width: "100%"
             }}
             autoCorrect={false}
@@ -168,7 +195,6 @@ export default class ChatScreen extends Component {
               this.setState({ chatMessage });
             }}
           />
-          {chatMessages}
         </SafeAreaView>
       </KeyboardAvoidingView>
     );
@@ -179,5 +205,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5FCFF"
-  }
+  },
+  myChatConatiner : {
+    width : '100%',
+    display : 'flex',
+    alignItems : 'flex-end'
+  },
+  myChat : {
+    backgroundColor : Color.mainColor,
+    margin : 10,
+    width : '45%',
+    display : 'flex',
+    borderRadius: 10,
+  },
+  myChatDesc : {
+    padding : 13,
+  },
+  yourConatiner : {
+    width : '100%',
+    display : 'flex',
+
+  },
+  yourChat : {
+    backgroundColor : 'grey',
+    margin : 10,
+    width : '45%',
+    display : 'flex',
+    borderRadius: 10,
+  },
+  yourChatDesc : {
+    padding : 13,
+  },
 });

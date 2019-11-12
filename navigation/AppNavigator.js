@@ -104,7 +104,6 @@ const ChatNavigator = createStackNavigator({
           <BackButton
             goBackButtonClick={async () => {
               if(props.screenProps.orderData.seller === props.screenProps.userData.id){
-                //방만든사람이랑 지금 아이디가 같으면 나갈때 방 파괴한다
                 deleteOrderList(props.screenProps.userData.id, props.screenProps.selectedParkData._id);
               }
 
@@ -113,7 +112,7 @@ const ChatNavigator = createStackNavigator({
                 'false',
                 props.screenProps.orderData._id
               );
-              await props.screenProps.resetAcceptArray();
+              // await props.screenProps.resetAcceptArray();
               props.navigation.navigate('List');
             }}
           />
