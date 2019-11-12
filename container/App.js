@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import AppNavigator from '../navigation/AppNavigator';
-import { PARK_LIST, SELECTED_PARK_DATA, USER_LOCATION_DATA, PARK_ORDER_LIST, ORDER_DATA, ACCEPT_ARRAY } from '../constants/ActionTypes';
+import { PARK_LIST, SELECTED_PARK_DATA, USER_LOCATION_DATA, PARK_ORDER_LIST, ORDER_DATA, ACCEPT_ARRAY, ACCEPT_ARRAY_RESET } from '../constants/ActionTypes';
 
 const mapStateToProps = state => {
   const { parkList, selectedParkData, userData, parkOrderList, orderData, acceptArray } = state;
@@ -16,6 +16,7 @@ const mapDispatchToProps = dispatch => ({
   getParkOrderList : data => dispatch({type : PARK_ORDER_LIST, data}),
   getOrderData : data => dispatch({type : ORDER_DATA, data}),
   getAcceptArray : data => dispatch({type : ACCEPT_ARRAY, data}),
+  resetAcceptArray : () => dispatch({type : ACCEPT_ARRAY_RESET}),
 });
 
 const AppContainer = props => {

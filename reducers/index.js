@@ -4,7 +4,8 @@ import {
   USER_LOCATION_DATA,
   PARK_ORDER_LIST,
   ORDER_DATA,
-  ACCEPT_ARRAY
+  ACCEPT_ARRAY,
+  ACCEPT_ARRAY_RESET
 } from '../constants/ActionTypes';
 
 const initialState = {
@@ -29,8 +30,11 @@ export default reducer = (state = initialState, action) => {
     case ORDER_DATA:
       return Object.assign({ ...state }, { orderData: action.data });
     case ACCEPT_ARRAY:
-      console.log(action);
-      return Object.assign({ ...state }, { acceptArray: action.data });
+       state.acceptArray.push(action.data);
+      return {...state}
+    case ACCEPT_ARRAY_RESET:
+      state.acceptArray = [];
+      return {...state}
     default:
       return state;
   }

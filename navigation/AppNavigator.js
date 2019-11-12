@@ -19,15 +19,10 @@ import { loginWithFacebook, logoutAsync, changeExchangeStatus } from '../api';
 
 import ParkListScreen from '../screens/ParkListScreen';
 
-
 import io from 'socket.io-client';
 import getEnvVars from '../environment';
-const {apiUrl} = getEnvVars();
-
-
-
-
-
+const { apiUrl } = getEnvVars();
+const socket = io.connect(apiUrl);
 
 const LoginContainer = props => {
   const facebookLogin = async () => {
@@ -85,27 +80,36 @@ const ChatNavigator = createStackNavigator({
       //   "point": 300,
       //   "seller": "5dc413c766741a7b15a292de",
       // }
-      
+
       return {
-        headerRight: <AcceptButton exchange={() => {
-          const socket = io.connect(apiUrl);
-          socket.emit('sendAlert', {userId : '여기는 보내는사람 id가 오는곳', roomId : props.screenProps.orderData._id})
-          console.log('교환');
+        headerRight: (
+          <AcceptButton
+            exchange={() => {
+              socket.emit('sendAlert', {
+                userId: props.screenProps.userData.id,
+                roomId: props.screenProps.orderData._id
+              });
+              console.log('교환');
 
-          //상대에게 교환 수락 메세지
+              //상대에게 교환 수락 메세지
 
+              //교환 완료 받으면
 
-          //교환 완료 받으면
-
-
-          //상대에게 포인트 이동
-        }} />,
+              //상대에게 포인트 이동
+            }}
+          />
+        ),
         headerLeft: (
           <BackButton
-          goBackButtonClick={() => {
-            changeExchangeStatus('false', props.screenProps.orderData._id);
-            props.navigation.navigate('List');
-          }}
+            goBackButtonClick={async () => {
+              socket.emit('LEAVE', { roomId: props.screenProps.orderData._id });
+              await changeExchangeStatus(
+                'false',
+                props.screenProps.orderData._id
+              );
+              await props.screenProps.resetAcceptArray();
+              props.navigation.navigate('List');
+            }}
           />
         ),
         title: 'Chat-View',

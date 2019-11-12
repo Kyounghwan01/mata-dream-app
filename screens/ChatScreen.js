@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View,
   Text,
-  FlatList,
-  ActivityIndicator,
-  Image,
   StyleSheet,
-  Button,
   TextInput,
   YellowBox,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  TouchableWithoutFeedback,
   Alert
 } from 'react-native';
-import { getSellerData } from '../api';
 import io from 'socket.io-client';
+import { getSellerData, changeExchangeStatus } from '../api';
 import Color from '../constants/Colors';
 import getEnvVars from '../environment';
-import { CONNECT_SOCKET } from '../constants/ActionTypes';
 const { apiUrl } = getEnvVars();
 
 YellowBox.ignoreWarnings([
@@ -32,57 +25,106 @@ export default class ChatScreen extends Component {
     this.state = {
       chatMessage: '',
       chatMessages: [],
-      socket: io.connect(apiUrl)
+      socket: io.connect(apiUrl),
+      exchangeState: true
     };
   }
   async componentDidMount() {
-    //didfoucus 함수
-    console.log(this.props.screenProps.userData.id);
     await getSellerData(this.props.screenProps.orderData.seller).then(res => {
       this.setState({ seller: res });
     });
+    // this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    //   console.log("qweqwe");
+    //   this.connectSocket();
+    // });
+    // this.focusListener();
     this.connectSocket();
+    //함수?
+    //대화불러오는 작업
+    //룸 들어오는 작업
+
+    this.blurListener = this.props.navigation.addListener('didBlur', () => {
+      this.state.socket.emit('LEAVE', {
+        roomId: this.props.screenProps.orderData._id
+      });
+    });
   }
+
   componentWillUnmount() {
-    this.connectSocket();
+    // this.focusListener.remove();
+    this.blurListener.remove();
+    this.state.socket.disconnect();
   }
 
   connectSocket = () => {
-    if (this.state.seller._id) {
-      this.state.socket.emit('JOIN', { roomId: this.props.screenProps.orderData._id });
+    if (this.state.seller._id && this.state.exchangeState) {
+      this.state.socket.emit('JOIN', {
+        roomId: this.props.screenProps.orderData._id
+      });
       //받기
       this.state.socket.on('receiveMessage', msg => {
         this.setState({ chatMessages: [...this.state.chatMessages, msg] });
       });
+      this.state.socket.on('receiveAccept', async userId => {
+        await this.props.screenProps.getAcceptArray(userId);
+        //상대방을 받았어
+        //length 2면 교환 시작
+        console.log(this.props.screenProps.acceptArray);
+      });
       this.state.socket.on('receiveAlert', userId => {
+        this.setState({ exchangeState: false });
         Alert.alert(
           '교환 하시겠습니까?',
-          '포인트는 얼마',
+          `포인트는 ${this.props.screenProps.orderData.point}pt 입니다.`,
           [
             {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
+              text: '취소 및 나가기',
+              onPress: async () => {
+                this.state.socket.emit('LEAVE', {
+                  roomId: this.props.screenProps.orderData._id
+                });
+                //소켓 삭제 방 나가기
+                await this.props.screenProps.resetAcceptArray();
+                await changeExchangeStatus(
+                  'false',
+                  this.props.screenProps.orderData._id
+                );
+                this.props.navigation.navigate('List');
+              },
               style: 'cancel'
             },
             {
               text: 'OK',
               onPress: async () => {
-                console.log(this.props.screenProps.acceptArray);
-                await this.props.screenProps.getAcceptArray(this.props.screenProps.userData.id);
-                console.log(this.props.screenProps.acceptArray);
-                console.log('교환 성공')
+                console.log(this.props.screenProps.userData.id);
+                this.state.socket.emit('sendAccept', {
+                  userId: this.props.screenProps.userData.id,
+                  roomId: this.props.screenProps.orderData._id
+                });
+                await this.props.screenProps.getAcceptArray(
+                  this.props.screenProps.userData.id
+                );
+                if (this.props.screenProps.acceptArray.length === 2) {
+                  Alert.alert('교환 성공');
+                } else {
+                  Alert.alert('상대방 수락 여부 대기');
+                }
+                // console.log(this.props.screenProps.acceptArray);
               }
             }
           ],
           { cancelable: false }
         );
-      })
+      });
     }
   };
 
   submitChatMessage() {
     //보내기
-    this.state.socket.emit('sendMessage', {message : this.state.chatMessage, roomId : this.props.screenProps.orderData._id});
+    this.state.socket.emit('sendMessage', {
+      message: this.state.chatMessage,
+      roomId: this.props.screenProps.orderData._id
+    });
     this.setState({ chatMessage: '' });
   }
 

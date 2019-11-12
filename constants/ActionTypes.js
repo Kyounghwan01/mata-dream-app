@@ -6,3 +6,4 @@ export const ORDER_DATA = 'ORDER_DATA';
 
 //socket
 export const ACCEPT_ARRAY = 'ACCEPT_ARRAY';
+export const ACCEPT_ARRAY_RESET = 'ACCEPT_ARRAY_RESET';
