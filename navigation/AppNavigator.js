@@ -11,9 +11,11 @@ import MainTabNavigator from "./MainTabNavigator";
 import LogoutButton from "../components/LogoutButton";
 import BackButton from "../components/BackButton";
 import AcceptButton from "../components/AcceptButton";
+import MyPage from "../components/MyPage";
 import ChatScreen from "../screens/ChatScreen";
 import ParkListScreen from "../screens/ParkListScreen";
 import LoginScreen from "../screens/LoginScreen";
+import MyPageScreen from "../screens/MyPageScreen";
 import colorConstans from "../constants/Colors";
 
 import getEnvVars from "../environment";
@@ -33,7 +35,10 @@ const LoginContainer = props => {
     try {
       const user = await loginWithFacebook();
       const point = await getUserData();
-      Alert.alert(`Hi ${user.name}! `, `가용한 포인트는 ${point.point}pt 입니다!`);
+      Alert.alert(
+        `Hi ${user.name}! `,
+        `가용한 포인트는 ${point.point}pt 입니다!`
+      );
       props.navigation.navigate("ParkList");
     } catch ({ message }) {
       Alert.alert(`Facebook Login Error: ${message}`);
@@ -57,12 +62,9 @@ const ParkListStack = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
-        //mypage
-        // headerLeft: (
-        //   <BackButton
-        //   goBackButtonClick={() => props.navigation.navigate('List')}
-        //   />
-        // ),
+        headerLeft: (
+          <MyPage goToMypage={() => props.navigation.navigate("MyPage")} />
+        ),
         title: "Park-List",
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
@@ -121,12 +123,35 @@ const ChatNavigator = createStackNavigator({
   }
 });
 
+const MyPageContainer = createStackNavigator({
+  MyPage: {
+    screen: MyPageScreen,
+    navigationOptions: props => {
+      return {
+        headerLeft: (
+          <BackButton
+            goBackButtonClick={() => {
+              props.navigation.navigate("ParkList");
+            }}
+          />
+        ),
+        title: "My-Page",
+        headerTintColor: colorConstans.headerTextColor,
+        headerStyle: {
+          backgroundColor: colorConstans.mainColor
+        }
+      };
+    }
+  }
+});
+
 const AppNavigator = createSwitchNavigator(
   {
     Login: LoginContainer,
     ParkList: ParkListStack,
     Main: MainTabNavigator,
-    ChatScreen: ChatNavigator
+    ChatScreen: ChatNavigator,
+    MyPage: MyPageContainer
   },
   {
     initialRouteName: "Login"

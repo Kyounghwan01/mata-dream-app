@@ -10,7 +10,6 @@ import {
 import { Icon, Button, Text, View } from 'native-base';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import colorConstans from '../constants/Colors';
 
 export default class ParkListScreen extends Component {
   constructor(props) {

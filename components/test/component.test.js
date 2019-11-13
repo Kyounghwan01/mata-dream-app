@@ -14,6 +14,8 @@ describe("render LogoutButton", () => {
   const wrapper = shallow(
     <LogoutButton onLogoutButtonClick={onLogoutButtonClick} />
   );
+  //console.log(wrapper.debug());
+  //console.log(wrapper.find(Text).text())
   wrapper.find(Button).simulate("press");
   test("should logout action when logoutbutton press", () => {
     expect(wrapper.find(Button).length).toBe(1);
