@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Alert } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Container, Button, Fab, Icon } from 'native-base';
-import RNPickerSelect from 'react-native-picker-select';
+import React, { Component } from "react";
+import { View, Text, Image, StyleSheet, ScrollView, Alert } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { Container, Button, Fab, Icon } from "native-base";
+import RNPickerSelect from "react-native-picker-select";
 
-import { getImageUrl, saveExchangeData } from '../api';
-import * as ImagePicker from 'expo-image-picker';
+import { getImageUrl, saveExchangeData } from "../api";
+import * as ImagePicker from "expo-image-picker";
 
 export default class EnrollOrderScreen extends Component {
   constructor(props) {
@@ -18,13 +18,6 @@ export default class EnrollOrderScreen extends Component {
       },
       point: 100
     };
-  }
-  componentDidMount() {
-    //console.log(this.props.screenProps.selectedParkData);
-  }
-
-  componentDidUpdate() {
-    // console.log(this.state);
   }
 
   generateLibrary = async () => {
@@ -62,12 +55,12 @@ export default class EnrollOrderScreen extends Component {
   //이거 유틸로 빼기
   createFormData = imageUri => {
     const data = new FormData();
-    const uriParts = imageUri.split('.');
+    const uriParts = imageUri.split(".");
     const fileType = uriParts[uriParts.length - 1];
 
-    data.append('file', {
+    data.append("file", {
       uri: imageUri,
-      name: imageUri.split('/').pop(),
+      name: imageUri.split("/").pop(),
       type: `image/${fileType}`
     });
 
@@ -76,7 +69,7 @@ export default class EnrollOrderScreen extends Component {
 
   submitData = async () => {
     if (this.state.image === null || this.state.point === null) {
-      return Alert.alert('사진 또는 포인트를 등록하세요');
+      return Alert.alert("사진 또는 포인트를 등록하세요");
     }
     try {
       const imageUrl = await getImageUrl(this.createFormData(this.state.image));
@@ -93,17 +86,17 @@ export default class EnrollOrderScreen extends Component {
       };
       const savedImageData = await saveExchangeData(data);
       if (savedImageData) {
-        Alert.alert('등록 성공하였습니다!');
+        Alert.alert("등록 성공하였습니다!");
         //this.props.navigation.navigate('List');
         await this.props.screenProps.getOrderData(savedImageData.newData);
-        this.props.navigation.navigate('ChatScreen');
+        this.props.navigation.navigate("ChatScreen");
       }
     } catch (error) {
       Alert.alert(
-        'Failed Enroll',
-        'ask Manager'[
-          ({ text: 'Cancel' },
-          { text: 'OK', onPress: () => this.props.navigation.navigate('List') })
+        "Failed Enroll",
+        "ask Manager"[
+          ({ text: "Cancel" },
+          { text: "OK", onPress: () => this.props.navigation.navigate("List") })
         ],
         { cancelable: false }
       );
@@ -125,7 +118,7 @@ export default class EnrollOrderScreen extends Component {
         <View style={styles.MapStyle}>
           <MapView
             provider={PROVIDER_GOOGLE}
-            style={{ width: '100%', height: 300 }}
+            style={{ width: "100%", height: 300 }}
             region={{
               latitude: this.props.screenProps.selectedParkData.location
                 .latitude,
@@ -169,7 +162,7 @@ export default class EnrollOrderScreen extends Component {
           {this.state.image ? (
             <View style={styles.imageContainer}>
               <Image
-                style={{ width: '100%', height: 300 }}
+                style={{ width: "100%", height: 300 }}
                 source={{ uri: `${this.state.image}` }}
               />
             </View>
@@ -188,7 +181,7 @@ export default class EnrollOrderScreen extends Component {
             </Text>
             <RNPickerSelect
               placeholder={{
-                label: '포인트를 선택해주세요'
+                label: "포인트를 선택해주세요"
               }}
               onValueChange={value => {
                 this.setState({
@@ -196,11 +189,11 @@ export default class EnrollOrderScreen extends Component {
                 });
               }}
               items={[
-                { label: '100', value: 100 },
-                { label: '200', value: 200 },
-                { label: '300', value: 300 },
-                { label: '400', value: 400 },
-                { label: '500', value: 500 }
+                { label: "100", value: 100 },
+                { label: "200", value: 200 },
+                { label: "300", value: 300 },
+                { label: "400", value: 400 },
+                { label: "500", value: 500 }
               ]}
               value={this.state.point}
               style={styles}
@@ -226,51 +219,51 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   welcomeDesc: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 15,
-    fontWeight: 'bold',
-    color: 'rgb(93,85,72)'
+    fontWeight: "bold",
+    color: "rgb(93,85,72)"
   },
   stepTwo: {
     height: 300,
     paddingTop: 20
   },
   stepTwoDesc: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingBottom: 20,
     borderRadius: 0,
-    color: 'rgb(93,85,72)'
+    color: "rgb(93,85,72)"
   },
   imageContainer: {
     height: 300,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 0
   },
   imageContainerDesc: {
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 300,
-    color: 'rgb(93,85,72)'
+    color: "rgb(93,85,72)"
   },
   btnGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around"
   },
   cameraBtn: {
-    width: '50%',
+    width: "50%",
     borderRadius: 0,
-    backgroundColor: 'green'
+    backgroundColor: "green"
   },
   album: {
-    width: '50%',
+    width: "50%",
     borderRadius: 0,
-    textAlign: 'center'
+    textAlign: "center"
   },
   albumIcon: {
-    paddingLeft: '40%'
+    paddingLeft: "40%"
   },
   stepThree: {
     height: 250,
@@ -278,10 +271,10 @@ const styles = StyleSheet.create({
   },
   stepThreeDesc: {
     fontSize: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     paddingBottom: 20,
-    color: 'rgb(93,85,72)'
+    color: "rgb(93,85,72)"
   },
   picker: {
     paddingTop: 30,
@@ -292,26 +285,26 @@ const styles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
     paddingVertical: 12,
-    textAlign: 'center',
+    textAlign: "center",
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 4,
-    color: 'grey'
+    color: "grey"
   },
   submitBtn: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
     borderRadius: 0,
-    width: '100%',
-    backgroundColor: 'rgb(95,197,166)'
+    width: "100%",
+    backgroundColor: "rgb(95,197,166)"
   },
   submitText: {
-    textAlign: 'center',
-    paddingLeft: '47%',
-    color: 'white',
-    fontWeight: 'bold',
+    textAlign: "center",
+    paddingLeft: "47%",
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16
   }
 });

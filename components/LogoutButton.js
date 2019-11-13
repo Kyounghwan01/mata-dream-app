@@ -1,8 +1,7 @@
-import React from 'react';
-import { Text } from 'react-native';
-import { Button } from 'native-base';
-
-import colorConstans from '../constants/Colors';
+import React from "react";
+import { Text } from "react-native";
+import { Button } from "native-base";
+import colorConstans from "../constants/Colors";
 
 const LogoutButton = props => {
   return (
@@ -14,7 +13,7 @@ const LogoutButton = props => {
       <Text
         style={{
           fontSize: 20,
-          fontWeight: 'bold',
+          fontWeight: "bold",
           color: colorConstans.headerTextColor
         }}
       >

@@ -1,27 +1,24 @@
-import React from 'react';
+import React from "react";
 import {
   createStackNavigator,
   createBottomTabNavigator,
-  createSwitchNavigator,
   createAppContainer
-} from 'react-navigation';
+} from "react-navigation";
 
-import ParkMainScreen from '../screens/ParkMainScreen';
-import CourseDetailScreen from '../screens/CourseDetailScreen';
-import OrderListScreen from '../screens/OrderListScreen';
-import LogoutButton from '../components/LogoutButton';
-import MataDreamNavigator from '../navigation/MataDreamNavigator';
+import ParkMainScreen from "../screens/ParkMainScreen";
+import LogoutButton from "../components/LogoutButton";
+import MataDreamNavigator from "../navigation/MataDreamNavigator";
 
-import { logoutAsync } from '../api';
+import { logoutAsync } from "../api";
 
-import TabBarIcon from '../components/TabBarIcon';
-import TabBarMaterial from '../components/TabBarMaterial';
-import colorConstans from '../constants/Colors';
+import TabBarIcon from "../components/TabBarIcon";
+import TabBarMaterial from "../components/TabBarMaterial";
+import colorConstans from "../constants/Colors";
 
 const LogoutHeader = props => {
   const requestLogout = async () => {
     await logoutAsync();
-    props.navigation.navigate('Login');
+    props.navigation.navigate("Login");
   };
 
   return <LogoutButton onLogoutButtonClick={requestLogout} />;
@@ -33,7 +30,7 @@ const ParkMainPageStack = createStackNavigator({
     navigationOptions: props => {
       return {
         headerRight: <LogoutHeader navigation={props.navigation} />,
-        title: '도움말',
+        title: "도움말",
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
@@ -45,65 +42,38 @@ const ParkMainPageStack = createStackNavigator({
 
 //밑에오는 이모티콘 및 설명
 ParkMainPageStack.navigationOptions = {
-  tabBarLabel: '도움말',
+  tabBarLabel: "도움말",
   tabBarOptions: {
     activeTintColor: colorConstans.mainColor,
-    inactiveTintColor: 'grey',
+    inactiveTintColor: "grey"
   },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name="ios-help-circle-outline" />
   )
 };
 
-// const mataDreamStack = createStackNavigator({
-//   MyCourse: {
-//     screen: OrderListScreen,
-//     navigationOptions: props => {
-//       return {
-//         headerRight: <LogoutHeader navigation={props.navigation} />,
-//         title: 'Mata-Dream',
-//         headerTintColor: colorConstans.headerTextColor,
-//         headerStyle: {
-//           backgroundColor: colorConstans.mainColor
-//         }
-//       };
-//     }
-//   }
-// });
-
-// mataDreamStack.navigationOptions = {
-//   tabBarLabel: 'mataDream',
-//   tabBarOptions: {
-//     activeTintColor: colorConstans.mainColor,
-//     inactiveTintColor: 'grey',
-//   },
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon focused={focused} name={'ios-list-box'} />
-//   )
-// };
-
 MataDreamNavigator.navigationOptions = {
-  tabBarLabel: 'mataDream',
+  tabBarLabel: "mataDream",
   tabBarOptions: {
     activeTintColor: colorConstans.mainColor,
-    inactiveTintColor: 'grey',
+    inactiveTintColor: "grey"
   },
   tabBarIcon: ({ focused }) => (
-    <TabBarMaterial focused={focused} name={'place'} />
+    <TabBarMaterial focused={focused} name={"place"} />
   )
 };
 
-const goToParkList = (props) => {
-  return props.navigation.navigate('ParkList');
-}
+const goToParkList = props => {
+  return props.navigation.navigate("ParkList");
+};
 goToParkList.navigationOptions = {
-  tabBarLabel: 'ParkList',
+  tabBarLabel: "ParkList",
   tabBarOptions: {
     activeTintColor: colorConstans.mainColor,
-    inactiveTintColor: 'grey',
+    inactiveTintColor: "grey"
   },
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'ios-list'} />
+    <TabBarIcon focused={focused} name={"ios-list"} />
   )
 };
 
@@ -114,7 +84,7 @@ const MainTabNavigator = createBottomTabNavigator(
     goToParkList
   },
   {
-    initialRouteName: 'MataDreamNavigator'
+    initialRouteName: "MataDreamNavigator"
   }
 );
 

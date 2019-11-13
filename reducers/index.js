@@ -6,15 +6,15 @@ import {
   ORDER_DATA,
   ACCEPT_ARRAY,
   ACCEPT_ARRAY_RESET
-} from '../constants/ActionTypes';
+} from "../constants/ActionTypes";
 
-const initialState = {
+export const initialState = {
   parkList: [],
   selectedParkData: {},
   userData: {},
-  parkOrderList : [],
-  orderData : {},
-  acceptArray : [],
+  parkOrderList: [],
+  orderData: {},
+  acceptArray: []
 };
 
 export default reducer = (state = initialState, action) => {
@@ -30,10 +30,11 @@ export default reducer = (state = initialState, action) => {
     case ORDER_DATA:
       return Object.assign({ ...state }, { orderData: action.data });
     case ACCEPT_ARRAY:
-       state.acceptArray.push(action.data);
-      return {...state}
+      let newArray = state.acceptArray.concat(action.data);
+      return Object.assign({ ...state }, { acceptArray: newArray });
     case ACCEPT_ARRAY_RESET:
-      return state.acceptArray
+      let emptyArray = [];
+      return Object.assign({ ...state }, { acceptArray: emptyArray });
     default:
       return state;
   }

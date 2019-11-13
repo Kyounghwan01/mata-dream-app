@@ -1,7 +1,6 @@
-import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
-
-import Colors from '../constants/Colors';
+import React from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const TabBarMaterial = props => {
   return (

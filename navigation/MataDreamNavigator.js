@@ -1,26 +1,24 @@
-import React from 'react';
+import React from "react";
 import {
   createStackNavigator,
   createSwitchNavigator,
   createAppContainer
-} from 'react-navigation';
+} from "react-navigation";
 
+import OrderListScreen from "../screens/OrderListScreen";
+import EnrollOrderScreen from "../screens/EnrollOrderScreen";
+import ViewOrderScreen from "../screens/ViewOrderScreen";
+import LogoutButton from "../components/LogoutButton";
+import BackButton from "../components/BackButton";
 
-import ParkMainScreen from '../screens/ParkMainScreen';
-import OrderListScreen from '../screens/OrderListScreen';
-import EnrollOrderScreen from '../screens/EnrollOrderScreen';
-import ViewOrderScreen from '../screens/ViewOrderScreen';
-import LogoutButton from '../components/LogoutButton';
-import BackButton from '../components/BackButton';
+import { logoutAsync } from "../api";
 
-import { logoutAsync } from '../api';
-
-import colorConstans from '../constants/Colors';
+import colorConstans from "../constants/Colors";
 
 const LogoutHeader = props => {
   const requestLogout = async () => {
     await logoutAsync();
-    props.navigation.navigate('Login');
+    props.navigation.navigate("Login");
   };
 
   return <LogoutButton onLogoutButtonClick={requestLogout} />;
@@ -50,7 +48,7 @@ const EnrollOrder = createStackNavigator({
         headerRight: <LogoutHeader navigation={props.navigation} />,
         headerLeft: (
           <BackButton
-          goBackButtonClick={() => props.navigation.navigate('List')}
+            goBackButtonClick={() => props.navigation.navigate("List")}
           />
         ),
         title: `MATA-DREAM 등록`,
@@ -71,10 +69,10 @@ const ViewOrder = createStackNavigator({
         headerRight: <LogoutHeader navigation={props.navigation} />,
         headerLeft: (
           <BackButton
-          goBackButtonClick={() => props.navigation.navigate('List')}
+            goBackButtonClick={() => props.navigation.navigate("List")}
           />
         ),
-        title: 'View-Order',
+        title: "View-Order",
         headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor
@@ -91,7 +89,7 @@ const MataDreamNavigator = createSwitchNavigator(
     View: ViewOrder
   },
   {
-    initialRouteName: 'List'
+    initialRouteName: "List"
   }
 );
 

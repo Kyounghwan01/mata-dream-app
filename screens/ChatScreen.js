@@ -31,7 +31,7 @@ export default class ChatScreen extends Component {
     super(props);
     this.state = {
       chatMessage: "",
-      chatMessages: [{ user: null, message: null }],
+      chatMessages: [],
       socket: io.connect(apiUrl)
     };
   }
@@ -48,6 +48,29 @@ export default class ChatScreen extends Component {
     });
   }
 
+  async componentDidUpdate() {
+    const { screenProps } = this.props;
+    if (screenProps.acceptArray.length === 2) {
+      const buyer = screenProps.acceptArray.filter(
+        id => id !== screenProps.orderData.seller
+      );
+      exchangeData = {
+        seller: screenProps.orderData.seller,
+        buyer: buyer[0],
+        point: Number(screenProps.orderData.point),
+        park: screenProps.orderData.park
+      };
+      changeExchangeStatus("true", screenProps.orderData._id);
+      await changePoint(exchangeData);
+      await screenProps.resetAcceptArray();
+      deleteOrderList(
+        screenProps.orderData.seller,
+        screenProps.orderData.park
+      ).then(this.props.navigation.navigate("List"));
+      Alert.alert("교환 성공");
+    }
+  }
+
   componentWillUnmount() {
     this.blurListener.remove();
     this.state.socket.disconnect();
@@ -60,7 +83,6 @@ export default class ChatScreen extends Component {
       socket.emit("JOIN", {
         roomId: screenProps.orderData._id
       });
-      //받기
       socket.on("receiveMessage", msg => {
         this.setState({
           chatMessages: [
@@ -71,24 +93,6 @@ export default class ChatScreen extends Component {
       });
       socket.on("receiveAccept", async userId => {
         await screenProps.getAcceptArray(userId);
-        if (screenProps.acceptArray.length === 2) {
-          const buyer = screenProps.acceptArray.filter(
-            id => id !== screenProps.orderData.seller
-          );
-          exchangeData = {
-            seller: screenProps.orderData.seller,
-            buyer: buyer[0],
-            point: Number(screenProps.orderData.point),
-            park: screenProps.orderData.park
-          };
-          changeExchangeStatus("true", screenProps.orderData._id);
-          await changePoint(exchangeData);
-          deleteOrderList(
-            screenProps.orderData.seller,
-            screenProps.orderData.park
-          ).then(this.props.navigation.navigate("List"));
-          Alert.alert("교환 성공");
-        }
       });
       socket.on("CANCEL_EVENT", () => {
         screenProps.resetAcceptArray();
@@ -103,21 +107,18 @@ export default class ChatScreen extends Component {
               text: "취소",
               onPress: async () => {
                 socket.emit("CANCEL", { roomId: screenProps.orderData._id });
-                screenProps.resetAcceptArray();
+                screenProps.resetAcceptArray([]);
               },
               style: "cancel"
             },
             {
               text: "OK",
               onPress: async () => {
-                console.log(screenProps.userData.id);
-                console.log(screenProps.acceptArray);
                 socket.emit("sendAccept", {
                   userId: screenProps.userData.id,
                   roomId: screenProps.orderData._id
                 });
-                await screenProps.getAcceptArray(screenProps.userData.id);
-                console.log(screenProps.acceptArray);
+                await screenProps.getAcceptArray([screenProps.userData.id]);
                 if (screenProps.acceptArray.length === 2) {
                   deleteOrderList(
                     screenProps.orderData.seller,
@@ -128,7 +129,10 @@ export default class ChatScreen extends Component {
                   this.setState({
                     chatMessages: [
                       ...this.state.chatMessages,
-                      "상대방 수락 여부 대기중 입니다..."
+                      {
+                        user: screenProps.userData.id,
+                        message: "상대방 수락 여부 대기중 입니다..."
+                      }
                     ]
                   });
                 }
@@ -152,21 +156,21 @@ export default class ChatScreen extends Component {
 
   render() {
     const chatMessages = this.state.chatMessages.map((chatMessage, index) => (
-      <>
+      <View key={index}>
         {chatMessage.user === this.props.screenProps.userData.id ? (
-          <View style={styles.myChatConatiner} key={index}>
+          <View style={styles.myChatConatiner}>
             <View style={styles.myChat}>
               <Text style={styles.myChatDesc}>{chatMessage.message}</Text>
             </View>
           </View>
         ) : (
-          <View style={styles.yourConatiner} key={index}>
+          <View style={styles.yourConatiner}>
             <View style={styles.yourChat}>
               <Text style={styles.yourChatDesc}>{chatMessage.message}</Text>
             </View>
           </View>
         )}
-      </>
+      </View>
     ));
 
     return (
@@ -177,9 +181,7 @@ export default class ChatScreen extends Component {
         keyboardVerticalOffset={80}
       >
         <SafeAreaView>
-          <ScrollView style={{height : '95%'}}>
-          {chatMessages}
-          </ScrollView>
+          <ScrollView style={{ height: "95%" }}>{chatMessages}</ScrollView>
           <TextInput
             style={{
               height: 40,
@@ -206,34 +208,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5FCFF"
   },
-  myChatConatiner : {
-    width : '100%',
-    display : 'flex',
-    alignItems : 'flex-end'
+  myChatConatiner: {
+    width: "100%",
+    display: "flex",
+    alignItems: "flex-end"
   },
-  myChat : {
-    backgroundColor : Color.mainColor,
-    margin : 10,
-    width : '45%',
-    display : 'flex',
-    borderRadius: 10,
+  myChat: {
+    backgroundColor: Color.mainColor,
+    margin: 10,
+    width: "45%",
+    display: "flex",
+    borderRadius: 10
   },
-  myChatDesc : {
-    padding : 13,
+  myChatDesc: {
+    padding: 13
   },
-  yourConatiner : {
-    width : '100%',
-    display : 'flex',
-
+  yourConatiner: {
+    width: "100%",
+    display: "flex"
   },
-  yourChat : {
-    backgroundColor : 'grey',
-    margin : 10,
-    width : '45%',
-    display : 'flex',
-    borderRadius: 10,
+  yourChat: {
+    backgroundColor: "grey",
+    margin: 10,
+    width: "45%",
+    display: "flex",
+    borderRadius: 10
   },
-  yourChatDesc : {
-    padding : 13,
-  },
+  yourChatDesc: {
+    padding: 13
+  }
 });

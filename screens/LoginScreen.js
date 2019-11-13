@@ -1,8 +1,8 @@
-import React from 'react';
-import { Alert, StyleSheet, ImageBackground, Text } from 'react-native';
-import { Icon, Button, View } from 'native-base';
+import React from "react";
+import { StyleSheet, ImageBackground, Text } from "react-native";
+import { Icon, Button, View } from "native-base";
 
-import colorConstans from '../constants/Colors';
+import colorConstans from "../constants/Colors";
 
 const LoginScreen = props => {
   const { onLoginButtonPress } = props;
@@ -11,7 +11,7 @@ const LoginScreen = props => {
     <ImageBackground
       style={styles.container}
       source={{
-        uri: 'http://image.auction.co.kr/itemimage/10/f7/f6/10f7f6c746.jpg'
+        uri: "http://image.auction.co.kr/itemimage/10/f7/f6/10f7f6c746.jpg"
       }}
     >
       <View style={styles.height40}>
@@ -38,37 +38,37 @@ const LoginScreen = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center"
   },
   height40: {
-    height: '40%'
+    height: "40%"
   },
   height100: {
-    height: '100%'
+    height: "100%"
   },
   buttonView: {
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center"
   },
   titleText: {
     color: colorConstans.mainColor,
     fontSize: 40,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 50
   },
   loginButton: {
     backgroundColor: colorConstans.facebookDefaultColor,
     borderRadius: 10,
     width: 200,
-    textAlign: 'center'
+    textAlign: "center"
   },
-  facebookdesc : {
-    color : 'white',
-    fontSize : 16,
-    marginRight : 18
-  },
+  facebookdesc: {
+    color: "white",
+    fontSize: 16,
+    marginRight: 18
+  }
 });
 
 export default LoginScreen;

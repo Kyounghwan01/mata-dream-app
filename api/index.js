@@ -1,41 +1,23 @@
-import * as Facebook from 'expo-facebook';
-import * as SecureStore from 'expo-secure-store';
-import axios from 'axios';
-import getEnvVars from '../environment';
-const {
-  apiUrl,
-  FB_appKey,
-  authConst,
-  weather_API_KEY,
-  air_API_KEY
-} = getEnvVars();
+import * as Facebook from "expo-facebook";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
+import getEnvVars from "../environment";
+const { apiUrl, FB_appKey, authConst } = getEnvVars();
 
 export const loginWithFacebook = async () => {
   const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(
     FB_appKey,
     {
-      permissions: ['public_profile'],
+      permissions: ["public_profile"],
       expires: 1
     }
   );
-  if (type === 'success') {
+  if (type === "success") {
     const user = await axios
       .get(
         `https://graph.facebook.com/me?access_token=${fbToken}&fields=id,name,picture.type(large)`
       )
       .then(res => res.data);
-    // Object {
-    //   "id": "124662448947517",
-    //   "name": "Kyounghwan Noh",
-    //   "picture": Object {
-    //     "data": Object {
-    //       "height": 200,
-    //       "is_silhouette": true,
-    //       "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=124662448947517&height=200&width=200&ext=1575184059&hash=AeQk4WBBEGscRVfo",
-    //       "width": 200,
-    //     },
-    //   },
-    // }
     const userToken = await getUserToken(user);
 
     await SecureStore.setItemAsync(authConst.SOCIAL_ID, user.id);
@@ -48,14 +30,14 @@ export const loginWithFacebook = async () => {
       .post(
         `${apiUrl}/auth/login/facebook`,
         {
-          socialService: 'FACEBOOK',
+          socialService: "FACEBOOK",
           socialId: user.id,
           userName: user.name,
           profileImage: user.picture.data.url
         },
         {
           headers: {
-            'content-type': 'application/json'
+            "content-type": "application/json"
           }
         }
       )
@@ -71,8 +53,8 @@ export const logoutAsync = async () => {
       {},
       {
         headers: {
-          'content-type': 'application/json',
-          userToken: 'Bearer ' + userToken
+          "content-type": "application/json",
+          userToken: "Bearer " + userToken
         }
       }
     )
@@ -92,10 +74,10 @@ export const getUserData = async () => {
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
   const userData = await axios.get(`${apiUrl}/auth/user`, {
     params: {
-      test: 'test입니다'
+      test: "test입니다"
     },
     headers: {
-      userToken: 'Bearer ' + userToken,
+      userToken: "Bearer " + userToken,
       socialId
     }
   });
@@ -107,7 +89,7 @@ export const getSellerData = async sellerId => {
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
   const sellerData = await axios.get(`${apiUrl}/auth/seller/${sellerId}`, {
     headers: {
-      userToken: 'Bearer ' + userToken,
+      userToken: "Bearer " + userToken,
       socialId
     }
   });
@@ -120,8 +102,8 @@ export const getImageUrl = async imageData => {
   return axios
     .post(`${apiUrl}/park/seats/upload`, imageData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        userToken: 'Bearer ' + userToken,
+        "Content-Type": "multipart/form-data",
+        userToken: "Bearer " + userToken,
         socialId
       }
     })
@@ -140,8 +122,8 @@ export const saveExchangeData = async data => {
       },
       {
         headers: {
-          'content-type': 'application/json',
-          userToken: 'Bearer ' + userToken,
+          "content-type": "application/json",
+          userToken: "Bearer " + userToken,
           socialId
         }
       }
@@ -154,7 +136,7 @@ export const getParkOrder = async parkId => {
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
   const res = await axios.get(`${apiUrl}/park/seats/${parkId}`, {
     headers: {
-      userToken: 'Bearer ' + userToken,
+      userToken: "Bearer " + userToken,
       socialId
     }
   });
@@ -167,7 +149,7 @@ export const deleteOrderList = async (userId, parkId) => {
   const res = await axios.delete(`${apiUrl}/park/seats/${userId}`, {
     data: { park: parkId },
     headers: {
-      userToken: 'Bearer ' + userToken,
+      userToken: "Bearer " + userToken,
       socialId
     }
   });
@@ -184,15 +166,15 @@ export const changeExchangeStatus = async (status, orderId) => {
     },
     {
       headers: {
-        'content-type': 'application/json',
-        userToken: 'Bearer ' + userToken,
+        "content-type": "application/json",
+        userToken: "Bearer " + userToken,
         socialId
       }
     }
   );
 };
 
-export const changePoint = async (exchangeData) => {
+export const changePoint = async exchangeData => {
   console.log(exchangeData);
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
@@ -204,31 +186,10 @@ export const changePoint = async (exchangeData) => {
     },
     {
       headers: {
-        'content-type': 'application/json',
-        userToken: 'Bearer ' + userToken,
+        "content-type": "application/json",
+        userToken: "Bearer " + userToken,
         socialId
       }
     }
   );
 };
-
-// export const saveExchangeData = async data => {
-//   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
-//   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
-
-//   return axios
-//     .post(
-//       `${apiUrl}/park/seats`,
-//       {
-//         data
-//       },
-//       {
-//         headers: {
-//           'content-type': 'application/json',
-//           userToken: 'Bearer ' + userToken,
-//           socialId
-//         }
-//       }
-//     )
-//     .then(res => res.data);
-// };
