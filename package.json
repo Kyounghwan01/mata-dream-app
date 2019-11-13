@@ -8,6 +8,12 @@
     "web": "expo start --web",
     "eject": "expo eject"
   },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
+    ]
+  },
   "dependencies": {
     "@expo/vector-icons": "^10.0.6",
     "axios": "^0.19.0",
@@ -42,7 +48,9 @@
     "enzyme-adapter-react-16": "^1.15.1",
     "jest-enzyme": "^7.1.2",
     "jest-expo": "^35.0.0",
-    "react-native-mock-render": "^0.1.6"
+    "jsdom": "^15.2.1",
+    "react-native-mock-render": "^0.1.6",
+    "react-test-renderer": "^16.11.0"
   },
   "private": true
 }

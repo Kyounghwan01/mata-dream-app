@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, Alert } from 'react-native';
-import { Button } from 'native-base';
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
-import { getParkOrder, deleteOrderList, getSellerData } from '../api';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
-import io from 'socket.io-client';
-import getEnvVars from '../environment';
+import React, { Component } from "react";
+import { View, Text, ScrollView, Image, StyleSheet, Alert } from "react-native";
+import { Button } from "native-base";
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
+import { getParkOrder, deleteOrderList, getSellerData } from "../api";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
+import io from "socket.io-client";
+import getEnvVars from "../environment";
 const { apiUrl } = getEnvVars();
-import { changeExchangeStatus } from '../api';
+import { changeExchangeStatus } from "../api";
 
 export default class OrderListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      socket: io.connect(apiUrl),
+      socket: io.connect(apiUrl)
     };
   }
 
@@ -43,23 +43,23 @@ export default class OrderListScreen extends Component {
 
   deleteOrder = async () => {
     Alert.alert(
-      '매물 삭제',
-      '등록하신 매물을 삭제하겠습니까?',
+      "매물 삭제",
+      "등록하신 매물을 삭제하겠습니까?",
       [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel'
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
         },
         {
-          text: 'OK',
+          text: "OK",
           onPress: async () => {
             await deleteOrderList(
               this.props.screenProps.userData.id,
               this.props.screenProps.selectedParkData._id
             )
-              .then(Alert.alert('삭제되었습니다'))
-              .then(this.props.navigation.navigate('ParkList'));
+              .then(Alert.alert("삭제되었습니다"))
+              .then(this.props.navigation.navigate("ParkList"));
           }
         }
       ],
@@ -68,14 +68,14 @@ export default class OrderListScreen extends Component {
   };
 
   goToDetailPage = async data => {
-    this.state.socket.emit('PREVENT_ENTER', {
-      status: 'trading',
+    this.state.socket.emit("PREVENT_ENTER", {
+      status: "trading",
       dataId: data._id
     });
     //디비에 전송
-    changeExchangeStatus('trading', data._id);
+    changeExchangeStatus("trading", data._id);
     this.props.screenProps.getOrderData(data);
-    this.props.navigation.navigate('ChatScreen');
+    this.props.navigation.navigate("ChatScreen");
   };
 
   render() {
@@ -87,10 +87,10 @@ export default class OrderListScreen extends Component {
       }
     });
     return (
-      <View style={{ flex: 1, backgroundColor: 'whitesmoke' }}>
+      <View style={{ flex: 1, backgroundColor: "whitesmoke" }}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          style={{ width: '100%', height: 260 }}
+          style={{ width: "100%", height: 260 }}
           region={{
             latitude: this.props.screenProps.selectedParkData.location.latitude,
             longitude: this.props.screenProps.selectedParkData.location
@@ -170,7 +170,7 @@ export default class OrderListScreen extends Component {
                     <View style={styles.point}>
                       <Text style={styles.pointDesc}>{data.point}pt</Text>
                     </View>
-                    {data.complete === 'false' ? (
+                    {data.complete === "false" ? (
                       <>
                         <View style={styles.exchange}>
                           <Text style={styles.pointDesc}>거래 가능</Text>
@@ -219,15 +219,15 @@ export default class OrderListScreen extends Component {
           <AntDesign
             style={styles.image}
             size={35}
-            name={'minuscircle'}
+            name={"minuscircle"}
             onPress={this.deleteOrder}
           />
         ) : (
           <Ionicons
             style={styles.image}
             size={35}
-            name={'md-add-circle'}
-            onPress={() => this.props.navigation.navigate('Enroll')}
+            name={"md-add-circle"}
+            onPress={() => this.props.navigation.navigate("Enroll")}
           />
         )}
       </View>
@@ -237,94 +237,94 @@ export default class OrderListScreen extends Component {
 
 const styles = StyleSheet.create({
   calloutContainer: {
-    display: 'flex',
+    display: "flex",
     height: 85,
     width: 70,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   imageStyle: { height: 60, width: 70, borderRadius: 5 },
   image: {
     height: 50,
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     bottom: 0,
     color: Colors.mainColor
   },
   conatinerstyle: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '95%',
-    margin: '2.5%',
+    display: "flex",
+    flexDirection: "column",
+    width: "95%",
+    margin: "2.5%",
     height: 190,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 5
   },
   mapstyle: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     height: 125,
-    justifyContent: 'center',
+    justifyContent: "center",
     margin: 10
   },
   realMapStyle: {
-    width: '50%',
+    width: "50%",
     height: 120
   },
   mapViewStyle: {
-    width: '50%',
+    width: "50%",
     height: 120
   },
   orderListDesc: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row'
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row"
   },
   point: {
-    backgroundColor: 'dodgerblue',
-    width: '30%',
-    alignItems: 'center',
+    backgroundColor: "dodgerblue",
+    width: "30%",
+    alignItems: "center",
     height: 30,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: 10
   },
   pointDesc: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 13
   },
   exchange: {
     backgroundColor: Colors.mainColor,
-    width: '30%',
-    alignItems: 'center',
+    width: "30%",
+    alignItems: "center",
     height: 30,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: 10
   },
   nonexchange: {
-    backgroundColor: 'darkgrey',
-    width: '30%',
-    alignItems: 'center',
+    backgroundColor: "darkgrey",
+    width: "30%",
+    alignItems: "center",
     height: 30,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: 10
   },
   messageBtn: {
-    backgroundColor: 'rgb(229,156,61)',
-    width: '30%',
-    alignItems: 'center',
+    backgroundColor: "rgb(229,156,61)",
+    width: "30%",
+    alignItems: "center",
     height: 30,
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 0
   },
   detailBtn: {
-    backgroundColor: 'rgb(143,120,76)',
-    width: '30%',
-    alignItems: 'center',
+    backgroundColor: "rgb(143,120,76)",
+    width: "30%",
+    alignItems: "center",
     height: 30,
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 0
   }
 });

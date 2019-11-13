@@ -1,4 +1,5 @@
-import reducer, { initialState } from "./index";
+import React from 'react';
+import reducer, {initialState } from "./index";
 import { PARK_LIST, SELECTED_PARK_DATA, USER_LOCATION_DATA, PARK_ORDER_LIST, ORDER_DATA } from "../constants/ActionTypes";
 
 describe("reducer function test", () => {
