@@ -53,6 +53,7 @@ yarn start
 - 실시간 채팅, 교환 기능
 
 ## Skills
+
 ### Client-Side
 
 - ES2015+
@@ -70,7 +71,6 @@ yarn start
 - Mongoose
 - Atlas
 
-
 ## Test
 
 - Reducer Unit Test (Jest)
@@ -83,6 +83,7 @@ yarn start
 - Google Play Store 배포
 
 ### Server
+
 - AWS Elastic beanstalk를 통해 서비스 배포
 - CircleCI를 통한 배포 자동화
 
@@ -91,22 +92,27 @@ yarn start
 - Git Branch 활용
 - Trello 활용한 Task Management
 
-
 ## Challenges
 
 ### react-native 특징 파악
-- `react-navigation`
+
+- `react-navigation`의 `createSwitchNavigator`, `createBottomNavigator`, `createAppContainer`들의 사용법을 자세히 보았습니다.
+  - 결론으로 위 네비게이션을 통해 이미 짜여진 구조에서는 새로 추가하는 것이 매우 어렵다는 것을 알았습니다.
+  - 그에 따라 화면 구조를 먼저 배치하고 내부를 채워 넣는 방법으로 개발을 진행하였습니다.
 
 ### 실시간 채팅, 정보 교환
+
 - `socket.io`를 이용하여 상대방과 채팅하였습니다.
 - 상대방의 행동에 따라 실시간으로 다른 반응 도출
   - 교환 수락시, 본인에게 대기 이벤트, 상대방에게는 상대방이 교환 수락 알림 이벤트
   - 교환 거부시, 상대방에게 거부 이벤트
   - 판매자 채팅방에 구매자 1 접근시, 실시간으로 구매자 2 접근 못하도록 이벤트
+- `socket`은 해당 컴포넌트를 벗어나면 `disconnect, room leave`를 해줘야 다음 컴포넌트에 영향을 주지 않는데, `react-native`의 경우 componentWillUnMount를 해도 `socket`이 끊기지 않았습니다. 결론은 `navigation` prop에 `addListener('didBlur', callback)`에 화면을 벗어나면 나오는 이벤트를 callback에 넣어서 해결하였습니다.
 - AWS에 서버를 배포한 이후에는 실시간 기능이 매우 느려졌습니다 (local 서버가 1초라면 배포 서버는 5초 정도)
 
 ### 코드 재사용, 모듈화
-- 최대한 재사용 가능한 코드를 만들도록 하였습니다 (마감기한에 다가옴에 따라 뒤로 갈수록 지키지 못함)
+
+- 최대한 재사용 가능한 코드를 만들도록 하였습니다 (마감기한에 다가옴에 따라 뒤로 갈수록 지키지 못함..)
 
 ### AWS S3 자료 저장 및 삭제
 
@@ -114,12 +120,10 @@ yarn start
 ## Things To Do
 
 - react-native e2e test
-  - react-native의 경우 `expo build:ios`를 통해 `.ipa`파일이 있어야 `detox`를 통해 e2e 테스트를 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야 빌드가 가능해서, 중지하였습니다. 라이센스 구매 할일이 생기면 꼭 e2e테스트를 해보고 싶습니다.
+  - react-native의 경우 `expo build:ios`를 통해 `.ipa`파일이 있어야 `detox`를 통해 e2e 테스트를 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야만 빌드가 가능하여 작성을 중지하였습니다. 라이센스 구매 할 일이 생기면 꼭 e2e테스트를 해보고 싶습니다.
 - 좀 더 디테일 한 `socket.io` 활용
   - 마감에 쫒겨서 socket 코드가 너무 모듈화되지 않았습니다.
 - 채팅 전송시 알람 기능
-
-
 
 ## Sincere Thanks
 
