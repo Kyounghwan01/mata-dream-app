@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { getParkList, getUserData } from '../api';
+import React, { Component } from "react";
+import { getParkList, getUserData } from "../api";
 import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Image
-} from 'react-native';
-import { Icon, Button, Text, View } from 'native-base';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
+} from "react-native";
+import { Text, View } from "native-base";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 
 export default class ParkListScreen extends Component {
   constructor(props) {
@@ -19,6 +19,7 @@ export default class ParkListScreen extends Component {
     this._getParkListAsync();
     this._getLocationAsync();
   }
+
   _getParkListAsync = async () => {
     const res = await getParkList();
     this.props.screenProps.getParkList(res.data.parkList);
@@ -26,7 +27,7 @@ export default class ParkListScreen extends Component {
   _getLocationAsync = async () => {
     const userData = await getUserData();
 
-      // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+    // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
     await Permissions.askAsync(Permissions.LOCATION);
     await Permissions.askAsync(Permissions.CAMERA);
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -36,19 +37,19 @@ export default class ParkListScreen extends Component {
       Permissions.CAMERA_ROLL,
       Permissions.CAMERA
     );
-    if (status !== 'granted') {
-      alert('Hey! You heve not enabled selected permissions');
+    if (status !== "granted") {
+      alert("Hey! You heve not enabled selected permissions");
     }
 
     let location = await Location.getCurrentPositionAsync({});
 
-    if(!location){
+    if (!location) {
       this.props.screenProps.getUserData({
-      name: userData.name,
-      id: userData._id,
-      latitude: 37.5055751,
-      longitude: 127.057275
-    });
+        name: userData.name,
+        id: userData._id,
+        latitude: 37.5055751,
+        longitude: 127.057275
+      });
     } else {
       this.props.screenProps.getUserData({
         name: userData.name,
@@ -57,13 +58,11 @@ export default class ParkListScreen extends Component {
         longitude: location.coords.longitude
       });
     }
-
-    // this._getWeather(location.coords.latitude, location.coords.longitude);
   };
 
   goToParkData = async data => {
     await this.props.screenProps.getParkData(data);
-    this.props.navigation.navigate('Main');
+    this.props.navigation.navigate("Main");
   };
 
   render() {
@@ -73,11 +72,11 @@ export default class ParkListScreen extends Component {
           <ScrollView>
             {this.props.screenProps.parkList.map((data, list) => {
               var imageAddress = [
-                require('../assets/잠실한강공원.jpg'),
-                require('../assets/뚝섬한강공원.jpg'),
-                require('../assets/이촌한강공원.jpg'),
-                require('../assets/반포한강공원.jpg'),
-                require('../assets/qwe.jpg')
+                require("../assets/잠실한강공원.jpg"),
+                require("../assets/뚝섬한강공원.jpg"),
+                require("../assets/이촌한강공원.jpg"),
+                require("../assets/반포한강공원.jpg"),
+                require("../assets/qwe.jpg")
               ];
               return (
                 <TouchableOpacity
@@ -93,10 +92,6 @@ export default class ParkListScreen extends Component {
                     <Text style={styles.ParkContainerAdd}>{data.address}</Text>
                   </View>
                 </TouchableOpacity>
-                // <TouchableOpacity key={list} style={styles.ParkContainer} onPress={()=>{this.goToParkData(data)}}>
-                //   <Text style={styles.ParkContainerText}>{data.name}</Text>
-                //   <Text style={styles.ParkContainerAdd}>{data.address}</Text>
-                // </TouchableOpacity>
               );
             })}
           </ScrollView>
@@ -108,7 +103,7 @@ export default class ParkListScreen extends Component {
 
 const styles = StyleSheet.create({
   view: {
-    position: 'absolute'
+    position: "absolute"
   },
   image: {
     width: 350,
@@ -116,30 +111,30 @@ const styles = StyleSheet.create({
     margin: 10
   },
   touchable: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 30
   },
   ParkContainer: {
-    display: 'flex',
+    display: "flex",
     // justifyContent: 'center',
     // height: 200,
-    backgroundColor: 'grey',
+    backgroundColor: "grey",
     margin: 10,
     borderRadius: 30
   },
   ParkContainerAdd: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12,
-    color: 'white'
+    color: "white"
   },
   ParkContainerText: {
-    textAlign: 'center',
+    textAlign: "center",
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 10,
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: "bold"
   }
 });

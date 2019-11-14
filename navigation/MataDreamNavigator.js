@@ -7,7 +7,6 @@ import {
 
 import OrderListScreen from "../screens/OrderListScreen";
 import EnrollOrderScreen from "../screens/EnrollOrderScreen";
-import ViewOrderScreen from "../screens/ViewOrderScreen";
 import LogoutButton from "../components/LogoutButton";
 import BackButton from "../components/BackButton";
 
@@ -61,32 +60,10 @@ const EnrollOrder = createStackNavigator({
   }
 });
 
-const ViewOrder = createStackNavigator({
-  MyCourse: {
-    screen: ViewOrderScreen,
-    navigationOptions: props => {
-      return {
-        headerRight: <LogoutHeader navigation={props.navigation} />,
-        headerLeft: (
-          <BackButton
-            goBackButtonClick={() => props.navigation.navigate("List")}
-          />
-        ),
-        title: "View-Order",
-        headerTintColor: colorConstans.headerTextColor,
-        headerStyle: {
-          backgroundColor: colorConstans.mainColor
-        }
-      };
-    }
-  }
-});
-
 const MataDreamNavigator = createSwitchNavigator(
   {
     List: orderList,
-    Enroll: EnrollOrder,
-    View: ViewOrder
+    Enroll: EnrollOrder
   },
   {
     initialRouteName: "List"

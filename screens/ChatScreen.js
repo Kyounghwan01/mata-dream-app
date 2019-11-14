@@ -5,7 +5,6 @@ import {
   TextInput,
   YellowBox,
   KeyboardAvoidingView,
-  Platform,
   SafeAreaView,
   Alert,
   View,
@@ -61,8 +60,8 @@ export default class ChatScreen extends Component {
         park: screenProps.orderData.park
       };
       changeExchangeStatus("true", screenProps.orderData._id);
+      screenProps.resetAcceptArray([]);
       await changePoint(exchangeData);
-      await screenProps.resetAcceptArray();
       deleteOrderList(
         screenProps.orderData.seller,
         screenProps.orderData.park
@@ -95,7 +94,7 @@ export default class ChatScreen extends Component {
         await screenProps.getAcceptArray(userId);
       });
       socket.on("CANCEL_EVENT", () => {
-        screenProps.resetAcceptArray();
+        screenProps.resetAcceptArray([]);
         Alert.alert("상대방이 교환 거부하셨습니다.");
       });
       socket.on("receiveAlert", () => {
@@ -186,7 +185,6 @@ export default class ChatScreen extends Component {
             style={{
               height: 40,
               borderWidth: 1,
-              // position: "absolute",
               bottom: 0,
               width: "100%"
             }}

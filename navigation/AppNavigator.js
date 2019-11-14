@@ -108,7 +108,7 @@ const ChatNavigator = createStackNavigator({
                 "false",
                 props.screenProps.orderData._id
               );
-              // await props.screenProps.resetAcceptArray();
+              await props.screenProps.resetAcceptArray([]);
               props.navigation.navigate("List");
             }}
           />

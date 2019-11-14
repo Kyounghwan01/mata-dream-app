@@ -49,7 +49,7 @@
     "jest-enzyme": "^7.1.2",
     "jest-expo": "^35.0.0",
     "jsdom": "^15.2.1",
-    "react-native-mock-render": "^0.1.6",
+    "react-native-testing-library": "^1.11.1",
     "react-test-renderer": "^16.11.0"
   },
   "private": true
