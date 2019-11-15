@@ -75,12 +75,15 @@ yarn start
 
 - Reducer Unit Test (Jest)
 - Component Unit Test (Jest, Enzyme)
+- e2e (detox) : 여러 시도했으나 `expo` 지원 중지로 인하여 실패
+  - 실행까지는 성공했으나, detox가 element를 인식하지 못하여 클릭 및 타이핑 불가
+  - https://github.com/wix/Detox/blob/master/docs/Guide.Expo.md
 
 ## Deployment & Continuous Integration
 
 ### Client
 
-- Google Play Store 배포
+- Google Play Store 배포 (예정)
 
 ### Server
 
@@ -96,7 +99,7 @@ yarn start
 
 ### react-native 특징 파악
 
-- `react-navigation`의 `createSwitchNavigator`, `createBottomNavigator`, `createAppContainer`들의 사용법을 자세히 보았습니다.
+- `react-navigation`의 `createSwitchNavigator`, `createBottomNavigator`, `createAppContainer` 사용법을 자세히 보았습니다.
   - 결론으로 위 네비게이션을 통해 이미 짜여진 구조에서는 새로 추가하는 것이 매우 어렵다는 것을 알았습니다.
   - 그에 따라 화면 구조를 먼저 배치하고 내부를 채워 넣는 방법으로 개발을 진행하였습니다.
 
@@ -120,7 +123,7 @@ yarn start
 ## Things To Do
 
 - react-native e2e test
-  - react-native의 경우 `expo build:ios`를 통해 `.ipa`파일이 있어야 `detox`를 통해 e2e 테스트를 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야만 빌드가 가능하여 작성을 중지하였습니다. 라이센스 구매 할 일이 생기면 꼭 e2e테스트를 해보고 싶습니다.
+  - react-native의 경우 expo가 지원을 안하기에 자체적으로는 불가능 하고, `expo build:ios`를 통해 `.ipa`파일을 만들어야 `detox`를 통해 e2e 테스트를 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야만 빌드가 가능하여 작성을 중지하였습니다. 라이센스 구매 할 일이 생기면 꼭 e2e테스트를 해보고 싶습니다.
 - 좀 더 디테일 한 `socket.io` 활용
   - 마감에 쫒겨서 socket 코드가 너무 모듈화되지 않았습니다.
 - 채팅 전송시 알람 기능
