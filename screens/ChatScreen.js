@@ -99,7 +99,6 @@ export default class ChatScreen extends Component {
         Alert.alert("상대방이 교환 거부하셨습니다.");
       });
       socket.on("HOSTOUT_YOUOUT", () => {
-        console.log("asd");
         this.state.socket.emit("LEAVE", {
           roomId: screenProps.orderData._id
         });
@@ -190,7 +189,13 @@ export default class ChatScreen extends Component {
         keyboardVerticalOffset={80}
       >
         <SafeAreaView>
-          <ScrollView style={{ height: "95%" }}>{chatMessages}</ScrollView>
+          <ScrollView
+            style={{ height: "95%" }}
+            ref={ref=>this.scrollView = ref}
+            onContentSizeChange={(contentWidth, contentHeight) => {
+              this.scrollView.scrollToEnd({animated:true});
+            }}
+          >{chatMessages}</ScrollView>
           <TextInput
             style={{
               height: 40,
