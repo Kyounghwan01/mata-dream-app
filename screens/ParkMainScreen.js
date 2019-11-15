@@ -53,13 +53,6 @@ export default class ParkMainScreen extends Component {
               </Text>
             </View>
             <View>
-              <Text>
-                4. 포인트 소진으로 충전을 원하시면 mataDream 페이지의 왼쪽
-                상단부의 마이페이지 아이콘을 클릭하시고 충전하기 버튼을
-                클릭하시면 1000포인트 충전됩니다.
-              </Text>
-            </View>
-            <View>
               <Text>저희 MATA-DREAM과 즐거운 시간 보내시길 바라겠습니다!!</Text>
             </View>
           </View>
