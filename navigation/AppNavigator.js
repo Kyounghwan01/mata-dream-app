@@ -97,17 +97,20 @@ const ChatNavigator = createStackNavigator({
                 props.screenProps.orderData.seller ===
                 props.screenProps.userData.id
               ) {
-                deleteOrderList(
+                await socket.emit("HOSTOUT", {
+                  roomId: props.screenProps.orderData._id
+                });
+                await deleteOrderList(
                   props.screenProps.userData.id,
                   props.screenProps.selectedParkData._id
                 );
+              } else {
+                await changeExchangeStatus(
+                  "false",
+                  props.screenProps.orderData._id
+                );
               }
-
               socket.emit("LEAVE", { roomId: props.screenProps.orderData._id });
-              await changeExchangeStatus(
-                "false",
-                props.screenProps.orderData._id
-              );
               await props.screenProps.resetAcceptArray([]);
               props.navigation.navigate("List");
             }}
