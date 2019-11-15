@@ -24,6 +24,7 @@ const LoginScreen = props => {
               primary
               onPress={onLoginButtonPress}
               style={styles.loginButton}
+              testID='welcome'
             >
               <Icon style={styles.Icon} name="logo-facebook" />
               <Text style={styles.facebookdesc}>Facebook Login</Text>

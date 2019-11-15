@@ -44,13 +44,26 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.1.0",
+    "detox": "^14.7.1",
+    "detox-expo-helpers": "^0.6.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "expo-detox-hook": "^1.0.10",
     "jest-enzyme": "^7.1.2",
     "jest-expo": "^35.0.0",
     "jsdom": "^15.2.1",
     "react-native-testing-library": "^1.11.1",
     "react-test-renderer": "^16.11.0"
   },
-  "private": true
+  "private": true,
+  "detox": {
+   "test-runner": "jest",
+    "configurations": {
+      "ios.sim": {
+        "binaryPath": "bin/Exponent.app",
+        "type": "ios.simulator",
+        "name": "iPhone 11"
+      }
+    }
+ }
 }
