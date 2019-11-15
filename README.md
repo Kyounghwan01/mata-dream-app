@@ -5,7 +5,7 @@
 - **MATA-DEREAM** 은 한강 공원에 자리 잡은 사람에게 그 자리를 구매하는 가상 앱입니다.
 - react-native, expo를 사용하여 앱을 구현하였습니다.
 
-<!-- <img height="500" alt="example" src="./runmate.gif"> -->
+<br>[![Video Label](http://img.youtube.com/vi/e6tEy4qXAHI/0.jpg)](https://www.youtube.com/watch?v=e6tEy4qXAHI) 
 
 ## Content
 
