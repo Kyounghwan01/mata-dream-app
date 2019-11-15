@@ -82,6 +82,7 @@ export default class ChatScreen extends Component {
       socket.emit("JOIN", {
         roomId: screenProps.orderData._id
       });
+
       socket.on("receiveMessage", msg => {
         this.setState({
           chatMessages: [
@@ -96,6 +97,15 @@ export default class ChatScreen extends Component {
       socket.on("CANCEL_EVENT", () => {
         screenProps.resetAcceptArray([]);
         Alert.alert("상대방이 교환 거부하셨습니다.");
+      });
+      socket.on("HOSTOUT_YOUOUT", () => {
+        console.log("asd");
+        this.state.socket.emit("LEAVE", {
+          roomId: screenProps.orderData._id
+        });
+        screenProps.resetAcceptArray([]);
+        Alert.alert('판매자가 나갔습니다.');
+        this.props.navigation.navigate("List");
       });
       socket.on("receiveAlert", () => {
         Alert.alert(
