@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, Image, StyleSheet, Alert } from "react-native";
+import { View, Text, Image, StyleSheet, Alert, FlatList } from "react-native";
 import { Button } from "native-base";
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import { getParkOrder, deleteOrderList, getSellerData } from "../api";
@@ -14,30 +14,19 @@ export default class OrderListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      socket: io.connect(apiUrl)
+      socket: io.connect(apiUrl),
+      refreshing: false
     };
   }
 
   componentDidMount() {
-    // this.state.socket.on('ENTER_SOMEONE', msg => {
-    //   //현재 접속된 사람을 위해
-    //   console.log('되니', msg);
-    //   //changeExchangeStatus
-    // });
-
     this.getOrderList();
-    // console.log(this.props.screenProps.userData.id);
-    //console.log(getParkOrderList(this.props.screenProps.selectedParkData._id));
   }
 
-  componentDidUpdate() {
-    // console.log(this.props.screenProps.parkOrderList);
-  }
   getOrderList = async () => {
     const list = await getParkOrder(
       this.props.screenProps.selectedParkData._id
     );
-    //파크 리스트 정보
     this.props.screenProps.getParkOrderList(list.parkList);
   };
 
@@ -72,7 +61,6 @@ export default class OrderListScreen extends Component {
       status: "trading",
       dataId: data._id
     });
-    //디비에 전송
     changeExchangeStatus("trading", data._id);
     this.props.screenProps.getOrderData(data);
     this.props.navigation.navigate("ChatScreen");
@@ -130,10 +118,16 @@ export default class OrderListScreen extends Component {
               })
             : null}
         </MapView>
-        <ScrollView>
-          {this.props.screenProps.parkOrderList.map((data, index) => {
+        <FlatList
+          data={this.props.screenProps.parkOrderList}
+          initialNumToRender={10}
+          onEndReachedThreshold={1}
+          refreshing={this.state.refreshing}
+          onRefresh={this.getOrderList}
+          keyExtractor={item => item._id}
+          renderItem={({ item, index }) => {
             let myOrder = false;
-            if (data.seller === this.props.screenProps.userData.id) {
+            if (item.seller === this.props.screenProps.userData.id) {
               checkEnrollUser = true;
               myOrder = true;
             } else {
@@ -147,30 +141,30 @@ export default class OrderListScreen extends Component {
                       provider={PROVIDER_GOOGLE}
                       style={styles.mapViewStyle}
                       region={{
-                        latitude: Number(data.location.latitude),
-                        longitude: Number(data.location.longitude),
+                        latitude: Number(item.location.latitude),
+                        longitude: Number(item.location.longitude),
                         latitudeDelta: 0.001,
                         longitudeDelta: 0.001
                       }}
                     >
                       <Marker
                         coordinate={{
-                          latitude: Number(data.location.latitude),
-                          longitude: Number(data.location.longitude)
+                          latitude: Number(item.location.latitude),
+                          longitude: Number(item.location.longitude)
                         }}
                         description="판매자위치"
                       ></Marker>
                     </MapView>
                     <Image
-                      source={{ uri: data.image_url }}
+                      source={{ uri: item.image_url }}
                       style={styles.realMapStyle}
                     />
                   </View>
                   <View style={styles.orderListDesc}>
                     <View style={styles.point}>
-                      <Text style={styles.pointDesc}>{data.point}pt</Text>
+                      <Text style={styles.pointDesc}>{item.point}pt</Text>
                     </View>
-                    {data.complete === "false" ? (
+                    {item.complete === "false" ? (
                       <>
                         <View style={styles.exchange}>
                           <Text style={styles.pointDesc}>거래 가능</Text>
@@ -180,7 +174,7 @@ export default class OrderListScreen extends Component {
                             {myOrder ? (
                               <Button
                                 style={styles.messageBtn}
-                                onPress={() => this.goToDetailPage(data)}
+                                onPress={() => this.goToDetailPage(item)}
                               >
                                 <Text style={styles.pointDesc}>대화하기</Text>
                               </Button>
@@ -193,7 +187,7 @@ export default class OrderListScreen extends Component {
                         ) : (
                           <Button
                             style={styles.messageBtn}
-                            onPress={() => this.goToDetailPage(data)}
+                            onPress={() => this.goToDetailPage(item)}
                           >
                             <Text style={styles.pointDesc}>대화하기</Text>
                           </Button>
@@ -213,8 +207,8 @@ export default class OrderListScreen extends Component {
                 </View>
               </View>
             );
-          })}
-        </ScrollView>
+          }}
+        />
         {checkEnrollUser ? (
           <AntDesign
             style={styles.image}
