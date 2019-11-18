@@ -10,7 +10,7 @@
 
 ## Requirements
 
-- 모바일 앱
+- 모바일 앱 (각 핸드폰 스토어에서 `expo` 설치 후 사용)
 - 웹으로 구동 하시려면 Xcode, simulator가 설치 요구
 - 모바일 사용시, 위치 서비스 `on` 후 실행
 
@@ -24,6 +24,7 @@ yarn install
 yarn ios or yarn start
 
 ```
+
 - client 환경 변수
 
 ```javascript
@@ -35,7 +36,8 @@ const localhost = "http://localhost:3001";
 const ENV = {
   dev: {
     apiUrl: localhost,
-    FB_appKey: "713430802477350",
+    //https://developers.facebook.com/ 에서 앱 생성후 나온 app id 기입
+    FB_appKey: "yourAppId",
     authConst: {
       SOCIAL_ID: "SOCIAL_ID",
       FBTOKEN: "FBTOKEN",
@@ -51,7 +53,6 @@ const getEnvVars = (env = Constants.manifest.releaseChannel) => {
 export default getEnvVars;
 ```
 
-
 ```javascript
 //server (다른 terminal)
 git clone https://github.com/Kyounghwan01/mata-dream-server.git
@@ -59,19 +60,22 @@ cd mataDream-server
 yarn install
 yarn start
 ```
+
 - server 환경 변수
+
 ```javascript
 //server root 리렉토리 `.env` 생성 후 아래 환경변수 기입
-PORT=3001
-NODE_ENV=development
-SESSION_SECRET_KEY=12345
-TOKEN_SECRET_KEY=123456
-DB_URL='mongodb+srv://mongodbUser:<password>@cluster0-9ockr.gcp.mongodb.net/mata_dream?retryWrites=true&w=majority'
-TEST_DB_URL='mongodb+srv://mongodbUser:<password>@cluster0-9ockr.gcp.mongodb.net/test_mata_dream?retryWrites=true&w=majority'
-AWS_ACCESS_KEY_ID='yourAwsAccessKeyId'
-AWS_SECRET_ACCESS_KEY='youtAwsSecretAccessKey'
+PORT = 3001;
+NODE_ENV = development;
+SESSION_SECRET_KEY = 12345;
+TOKEN_SECRET_KEY = 123456;
+DB_URL =
+  "mongodb+srv://mongodbUser:<password>@cluster0-9ockr.gcp.mongodb.net/mata_dream?retryWrites=true&w=majority";
+TEST_DB_URL =
+  "mongodb+srv://mongodbUser:<password>@cluster0-9ockr.gcp.mongodb.net/test_mata_dream?retryWrites=true&w=majority";
+AWS_ACCESS_KEY_ID = "yourAwsAccessKeyId";
+AWS_SECRET_ACCESS_KEY = "youtAwsSecretAccessKey";
 ```
-
 
 ## Features
 
@@ -83,6 +87,12 @@ AWS_SECRET_ACCESS_KEY='youtAwsSecretAccessKey'
 - 사진 저장, 카메라, 앨범 접근
 - 공원 별 자리 등록, 삭제 기능
 - 실시간 채팅, 교환 기능
+- 동시접속된 상대방의 행동에 따라 실시간으로 다른 반응 도출
+  - 판매자 채팅방에 구매자 1 접근시, 실시간으로 구매자 2 접근 못하도록 이벤트
+  - 구매자 방 나갈시 다른 구매자가 판매자 채팅방 접근 가능 이벤트
+  - 판매자 방 나갈시 구매자도 자동 방 나감 이벤트
+  - 교환 수락시, 본인에게 대기 이벤트, 상대방에게는 상대방이 교환 수락 알림 이벤트
+  - 교환 거부시, 상대방에게 거부 이벤트
 
 ## Skills
 
@@ -110,6 +120,7 @@ AWS_SECRET_ACCESS_KEY='youtAwsSecretAccessKey'
 - end-to-end Test(e2e) (detox) : 여러 시도했으나 `expo` 지원 중지로 인하여 실패
   - 실행까지는 성공했으나, detox가 element를 인식하지 못하여 클릭 및 타이핑 불가
   - https://github.com/wix/Detox/blob/master/docs/Guide.Expo.md
+  - [Things To Do](#Things-To-Do)
 
 ## Deployment & Continuous Integration
 
@@ -137,22 +148,23 @@ AWS_SECRET_ACCESS_KEY='youtAwsSecretAccessKey'
 
 ### 실시간 채팅, 정보 교환
 
-- `socket.io`를 이용하여 상대방과 채팅하였습니다.
-- 동시접속된 상대방의 행동에 따라 실시간으로 다른 반응 도출
-  - 교환 수락시, 본인에게 대기 이벤트, 상대방에게는 상대방이 교환 수락 알림 이벤트
-  - 교환 거부시, 상대방에게 거부 이벤트
-  - 판매자 채팅방에 구매자 1 접근시, 실시간으로 구매자 2 접근 못하도록 이벤트
-- `socket`은 해당 컴포넌트를 벗어나면 `disconnect, room leave`를 해줘야 다음 컴포넌트에 영향을 주지 않는데, `react-native`의 경우 componentWillUnmount 해도 `socket`이 끊기지 않았습니다. 결론은 `navigation` prop에 `addListener('didBlur', callback)`에 화면을 벗어나면 나오는 이벤트를 callback에 넣어서 해결하였습니다.
+- `socket`은 해당 컴포넌트를 벗어나면 `disconnect, room leave`를 해줘야 다음 컴포넌트에 영향을 주지 않는데, `react-native`의 경우 `componentWillUnmount` 해도 `socket`이 끊기지 않았습니다. 결론은 `navigation` prop에 `addListener('didBlur', callback)`에 화면을 벗어나면 나오는 이벤트를 callback에 넣어서 해결하였습니다.
 - AWS에 서버를 배포한 이후에는 실시간 기능이 매우 느려졌습니다 (local 서버가 1초라면 배포 서버는 5초 정도)
-  - 서버와 클라이언트간 물리적 거리가 멀고, 클라이언트 간에도 사이가 멀기에 반응이 느려진다고 추측됩니다
+  - 서버와 클라이언트간 물리적 거리가 멀고, 클라이언트 간에도 사이가 멀어져 반응이 느려짐
+  - 그래서 해결법은??
 
 ### 코드 재사용, 모듈화
 
-- 최대한 재사용 가능한 코드를 만들도록 하였습니다 (마감기한에 다가옴에 따라 뒤로 갈수록 지키지 못함)
+- 최대한 재사용 가능한 코드를 만들도록 하였습니다
+  - 뒤로가기, 로그아웃 버튼 등 대부분의 스크린에 필요한 요소를 컴포넌트화 하여 분리
+  - 그에 따라 `icon`의 이름, `button`의 `onPress` 이벤트가 독립적으로 유지되야함을 깨닫고, `prop`으로 내리기 시작
+  - `container`를 하나로 앱 전체를 감싸 앱 내 정보를 `mapDispatchToProps`내 함수로 핸들링 가능 (A라는 함수로 정보를 바꾸면 다른 스크린에서도 동일하게 바뀜, 다른 스크린에서도 A함수 사용 가능)
 
 ### AWS S3 자료 저장 및 삭제
-- data formatting
 
+- data formatting
+  - 받은 사진을 aws에 전송 전, aws가 원하는 자료 및 차후 재사용하기 용이하게 데이터 포맷팅
+  - 사진 저장 전, aws s3에 삭제하기 용이한 포맷으로 저장하여, s3에서의 데이터 삭제 과정이 매우 용이하게 이뤄짐
 
 ## Things To Do
 
