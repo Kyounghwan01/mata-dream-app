@@ -2,7 +2,7 @@
 
 ## Intorduction
 
-- **MATA-DEREAM** 은 한강 공원에 자리 잡은 사람에게 그 자리를 구매하는 가상 앱
+- **MATA-DEREAM** : 한강 공원에 자리 잡은 사람에게 그 자리를 구매하는 가상 앱
 - 앱 프레임 워크 : `react-naticve`, `expo`
 - 실시간 통신 : `socket.io`
 
@@ -117,8 +117,8 @@ AWS_SECRET_ACCESS_KEY = "youtAwsSecretAccessKey";
 
 - Reducer Unit Test (Jest)
 - Component Unit Test (Jest, Enzyme)
-- end-to-end Test(e2e) (detox) : 여러 시도했으나 `expo` 지원 중지로 인하여 실패
-  - 실행까지는 성공했으나, detox가 element를 인식하지 못하여 클릭 및 타이핑 불가
+- end-to-end Test(e2e) (detox) : 아래의 이유, `expo` 지원 중지로 인하여 실패
+  - 테스트 실행까지는 성공했으나, detox가 element를 인식하지 못하여 클릭 및 타이핑 불가
   - https://github.com/wix/Detox/blob/master/docs/Guide.Expo.md
   - [Things To Do](#Things-To-Do)
 
@@ -126,7 +126,7 @@ AWS_SECRET_ACCESS_KEY = "youtAwsSecretAccessKey";
 
 ### Client
 
-- Google Play Store 배포 (배포 후 google console에서 검수 중)
+- Google Play Store 배포 (mata-dream)
 
 ### Server
 
@@ -142,21 +142,22 @@ AWS_SECRET_ACCESS_KEY = "youtAwsSecretAccessKey";
 
 ### react-native 특징 파악
 
-- `react-navigation`의 `createSwitchNavigator`, `createBottomNavigator`, `createAppContainer` 사용법을 자세히 보았습니다.
-  - 결론으로 위 네비게이션을 통해 이미 짜여진 구조에서 새로 화면을 추가하는 것이 매우 어렵다는 것을 알았습니다.
-  - 그에 따라 화면 구조를 먼저 배치하고 내부를 채워 넣는 방법으로 개발을 진행하였습니다.
+- `react-navigation`의 `createSwitchNavigator`, `createBottomNavigator`, `createAppContainer` 특징 파악
+  - 결론으로 위 네비게이션을 통해 이미 짜여진 구조에서 새로 화면을 추가 과정 어려움
+  - 그에 따라 화면 구조를 먼저 배치하고 내부를 채워 넣는 방법으로 개발 진행
 
 ### 실시간 채팅, 정보 교환
 
-- `socket`은 해당 컴포넌트를 벗어나면 `disconnect, room leave`를 해줘야 다음 컴포넌트에 영향을 주지 않는데, `react-native`의 경우 `componentWillUnmount` 해도 `socket`이 끊기지 않았습니다. 결론은 `navigation` prop에 `addListener('didBlur', callback)`에 화면을 벗어나면 나오는 이벤트를 callback에 넣어서 해결하였습니다.
-- AWS에 서버를 배포한 이후에는 실시간 기능이 매우 느려졌습니다 (local 서버가 1초라면 배포 서버는 5초 정도)
-  - 서버와 클라이언트간 물리적 거리가 멀고, 클라이언트 간에도 사이가 멀어져 반응이 느려짐
-  - 그래서 해결법은??
+- socket room leave 해도 계속 연결
+  - `socket`은 해당 컴포넌트를 벗어나면 `disconnect, room leave`를 해줘야 다음 컴포넌트에 영향을 주지 않는데, `react-native`의 경우 `componentWillUnmount`때 위 과정을 실행 해도 `socket`이 끊기지 않음
+  - `navigation` prop에 `addListener('didBlur', callback)`에 화면을 벗어나면 나오는 이벤트를 callback에 넣어서 해결.
+- 실시간 요청으로 비동기 과정 요
+  - 교환이 성공하면, 거래 리스트 페이지로 이동 전, 본인이 성공 한 거래 리스트 삭제 후, 리스트 렌더
 
 ### 코드 재사용, 모듈화
 
-- 최대한 재사용 가능한 코드를 만들도록 하였습니다
-  - 뒤로가기, 로그아웃 버튼 등 대부분의 스크린에 필요한 요소를 컴포넌트화 하여 분리
+- 재사용 가능한 코드
+  - 뒤로가기, 로그아웃 버튼 등 대부분의 스크린에 필요한 요소를 컴포넌트 화 하여 분리
   - 그에 따라 `icon`의 이름, `button`의 `onPress` 이벤트가 독립적으로 유지되야함을 깨닫고, `prop`으로 내리기 시작
   - `container`를 하나로 앱 전체를 감싸 앱 내 정보를 `mapDispatchToProps`내 함수로 핸들링 가능 (A라는 함수로 정보를 바꾸면 다른 스크린에서도 동일하게 바뀜, 다른 스크린에서도 A함수 사용 가능)
 
@@ -164,13 +165,14 @@ AWS_SECRET_ACCESS_KEY = "youtAwsSecretAccessKey";
 
 - data formatting
   - 받은 사진을 aws에 전송 전, aws가 원하는 자료 및 차후 재사용하기 용이하게 데이터 포맷팅
-  - 사진 저장 전, aws s3에 삭제하기 용이한 포맷으로 저장하여, s3에서의 데이터 삭제 과정이 매우 용이하게 이뤄짐
+  - 사진 저장 전, aws s3에 삭제하기 용이한 포맷으로 저장하여, s3에서의 데이터 삭제 과정이 용이하게 이뤄짐
 
 ## Things To Do
 
 - e2e test
-  - react-native의 경우 expo가 지원을 안하기에 자체적으로는 불가능 하고, `expo build:ios`를 통해 `.ipa`파일을 만들어야 `detox`를 통해 e2e 테스트를 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야만 빌드가 가능하여 작성을 중지하였습니다. 라이센스 구매 할 일이 생기면 꼭 e2e테스트를 해보고 싶습니다.
-- 실시간 기능 `socket.io` 활용한 코드 리펙토링
+  - react-native의 경우 expo가 지원을 안하기에 자체적으로는 불가능 하고, `expo build:ios`를 통해 `.ipa`파일을 만들어야 `detox`를 통해 e2e 테스트 실행가능한데, 빌드를 하려면 apple 라이센스를 구입해야만 빌드가 가능하여 작성 중지
+  - 라이센스 구매 시 꼭 해보고 싶은 테스트입니다
+- 실시간 기능 `socket.io` 활용한 코드 구간 리펙토링
 - 채팅 전송시 알람 기능
 
 ## Sincere Thanks
