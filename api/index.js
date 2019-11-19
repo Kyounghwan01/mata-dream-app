@@ -73,9 +73,6 @@ export const getUserData = async () => {
   const userToken = await SecureStore.getItemAsync(authConst.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConst.SOCIAL_ID);
   const userData = await axios.get(`${apiUrl}/auth/user`, {
-    params: {
-      test: "test입니다"
-    },
     headers: {
       userToken: "Bearer " + userToken,
       socialId

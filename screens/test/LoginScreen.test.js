@@ -2,7 +2,7 @@ import React from "react";
 import Adapter from "enzyme-adapter-react-16";
 configure({ adapter: new Adapter() });
 import { shallow, configure } from "enzyme";
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 import { Button } from "native-base";
 
 import LoginScreen from "../LoginScreen";

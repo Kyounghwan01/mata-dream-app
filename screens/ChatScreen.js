@@ -103,7 +103,7 @@ export default class ChatScreen extends Component {
           roomId: screenProps.orderData._id
         });
         screenProps.resetAcceptArray([]);
-        Alert.alert('판매자가 나갔습니다.');
+        Alert.alert("판매자가 나갔습니다.");
         this.props.navigation.navigate("List");
       });
       socket.on("receiveAlert", () => {
@@ -191,19 +191,26 @@ export default class ChatScreen extends Component {
         <SafeAreaView>
           <ScrollView
             style={{ height: "95%" }}
-            ref={ref=>this.scrollView = ref}
+            ref={ref => (this.scrollView = ref)}
             onContentSizeChange={(contentWidth, contentHeight) => {
-              this.scrollView.scrollToEnd({animated:true});
+              this.scrollView.scrollToEnd({ animated: true });
             }}
-          >{chatMessages}</ScrollView>
+          >
+            {chatMessages}
+          </ScrollView>
           <TextInput
             style={{
               height: 40,
               borderWidth: 1,
               bottom: 0,
-              width: "100%"
+              width: "95%",
+              marginLeft: "2.5%",
+              borderRadius: 50,
+              paddingLeft: 20,
+              paddingRight: 20
             }}
             autoCorrect={false}
+            autoFocus={true}
             value={this.state.chatMessage}
             onSubmitEditing={() => this.submitChatMessage()}
             onChangeText={chatMessage => {

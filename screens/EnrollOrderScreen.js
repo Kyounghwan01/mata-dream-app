@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, Alert } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { Container, Button, Fab, Icon } from "native-base";
+import { Button, Icon } from "native-base";
 import RNPickerSelect from "react-native-picker-select";
 
 import { getImageUrl, saveExchangeData } from "../api";
@@ -52,7 +52,6 @@ export default class EnrollOrderScreen extends Component {
     }
   };
 
-  //이거 유틸로 빼기
   createFormData = imageUri => {
     const data = new FormData();
     const uriParts = imageUri.split(".");
